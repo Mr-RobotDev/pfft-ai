@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  aiservice:
+    volumes:
+      - ./aiservice/uwsgi.ini:/uwsgi.ini
+  pfft:
+    hostname: pfft
+  gateway:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/www:/var/www/certbot/:ro
+      - /certbot/conf:/etc/nginx/ssl/:ro
+  certbot:
+    volumes:
+      - ./certbot/www:/var/www/certbot/:rw
+      - ./certbot/conf:/etc/letsencrypt/:rw

@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  aiservice:
+    build:
+      context: ./aiservice
+      dockerfile: Dockerfile
+    container_name: aiservice
+    restart: "unless-stopped"
+    networks:
+      - backend 
+  pfft:
+    build:
+      context: ./pfft
+      dockerfile: Dockerfile
+    container_name: pfft
+    restart: "unless-stopped"
+    networks:
+      - backend
+  gateway:
+    image: nginx:latest
+    container_name: gateway
+    restart: "unless-stopped"
+    depends_on:
+      - aiservice
+      - pfft
+      - certbot
+    networks:
+      - backend
+  certbot:
+    image: certbot/certbot:latest
+
+
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local

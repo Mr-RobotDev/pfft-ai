@@ -1,0 +1,128 @@
+@tailwind base;
+
+a {
+  @apply text-blue-700;
+}
+@layer utilities {
+  .bg-gradient-red-1-to-red-2 {
+    background-image: linear-gradient(
+      to right,
+      rgba(255, 48, 49, 1),
+      rgba(255, 145, 77, 1)
+    );
+  }
+}
+@font-face {
+  font-family: "Courier Prime";
+  src: url("/fonts/CourierPrime-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Copperplate";
+  src: url("/fonts/copperplate-gothic-font.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+a:hover {
+  @apply border-b-2 border-blue-700;
+}
+
+@font-face {
+  font-family: "Courier Prime";
+  src: url("/fonts/CourierPrime-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Copperplate";
+  src: url("/fonts/copperplate-gothic-font.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@tailwind components;
+
+@tailwind utilities;
+
+.content p {
+  @apply my-6;
+}
+
+.content ul {
+  @apply my-6;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+form {
+  width: 20rem;
+}
+.Toastify__toast {
+  font-size: 0.9375rem !important;
+  color: rgb(0, 0, 0) !important;
+  @apply font-courierPrime !important;
+  font-weight: 700 !important;
+}
+
+.ticker-module_tickerText__ryjAR {
+  color: #ffffff !important;
+  font-size: 30px !important;
+  font-weight: 400 !important;
+  line-height: 36px !important;
+  /* added font family configured in tailwind */
+  @apply font-copperplate;
+  padding: 0 16px !important;
+  white-space: nowrap !important;
+}
+
+@media (min-width: 280px) {
+  .ticker-module_tickerText__ryjAR {
+    font-size: 13px !important;
+    line-height: 15px !important;
+  }
+}
+@media (min-width: 375px) {
+  .ticker-module_tickerText__ryjAR {
+    font-size: 17px !important;
+    line-height: 20px !important;
+  }
+}
+@media (max-width: 570px) {
+  form {
+    width: 100%;
+  }
+}
+@media (min-width: 640px) {
+  .ticker-module_tickerText__ryjAR {
+    font-size: 18px !important;
+    line-height: 21px !important;
+  }
+}
+@media (min-width: 768px) {
+  .ticker-module_tickerText__ryjAR {
+    font-size: 20px !important;
+    line-height: 23px !important;
+  }
+}
+@media (min-width: 1024px) {
+  .ticker-module_tickerText__ryjAR {
+    font-size: 23px !important;
+    line-height: 25px !important;
+  }
+}
+@media (min-width: 1280px) {
+  .ticker-module_tickerText__ryjAR {
+    font-size: 25px !important;
+    line-height: 27px !important;
+  }
+}
+@media (min-width: 1530px) {
+  .ticker-module_tickerText__ryjAR {
+    font-size: 28px !important;
+    line-height: 30px !important;
+  }
+}
