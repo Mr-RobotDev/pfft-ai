@@ -13,9 +13,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./certbot/www:/var/www/certbot/:ro
-      - /certbot/conf:/etc/nginx/ssl/:ro
-      - /etc/letsencrypt/live/pfft.bilalanjum.me/fullchain.pem:/etc/letsencrypt/live/pfft.bilalanjum.me/fullchain.pem
-      - /etc/letsencrypt/live/pfft.bilalanjum.me/privkey.pem:/etc/letsencrypt/live/pfft.bilalanjum.me/privkey.pem
+      - ./certbot/conf:/etc/nginx/ssl/:ro
   certbot:
     volumes:
       - ./certbot/www:/var/www/certbot/:rw
