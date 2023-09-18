@@ -20,6 +20,32 @@ jobs:
         envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
         directory: aiservice
         file_name: .env
+    - name: Create Dotenv File
+      uses: actually-colab/github-action-create-env-file@v2.3
+      with:
+        envkey_NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        envkey_NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+        envkey_NEXTAUTH_UR_BLOG: ${{ secrets.NEXTAUTH_UR_BLOG }}
+        envkey_PFFT_AI_API_URL: ${{ secrets.PFFT_AI_API_URL }}
+        envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        envkey_GOOGLE_ID: ${{ secrets.GOOGLE_ID }}
+        envkey_GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+        envkey_ENCRYPT_PRIVATE_KEY: ${{ secrets.ENCRYPT_PRIVATE_KEY }}
+        envkey_MONGO_URL: ${{ secrets.MONGO_URL }}
+        envkey_EMS_MONGO_URL: ${{ secrets.EMS_MONGO_URL }}
+        envkey_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+        envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        envkey_MONTHLY_PAYMENT_AMOUNT_1000_CREDIT: ${{ secrets.MONTHLY_PAYMENT_AMOUNT_1000_CREDIT }}
+        envkey_MONTHLY_PAYMENT_AMOUNT_2000_CREDIT: ${{ secrets.MONTHLY_PAYMENT_AMOUNT_2000_CREDIT }}
+        envkey_FREE_CREDIT_AMOUNT: ${{ secrets.FREE_CREDIT_AMOUNT }}
+        envkey_DEDUCTED_AMOUNT_FROM_CREDIT: ${{ secrets.DEDUCTED_AMOUNT_FROM_CREDIT }}
+        envkey_VAT_TAX: ${{ secrets.VAT_TAX }}
+        envkey_NEXT_PUBLIC_STRIPE_API_VERSION: ${{ secrets.NEXT_PUBLIC_STRIPE_API_VERSION }}
+        envkey_NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ secrets.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+        envkey_RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+        envkey_IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
+        directory: pfft
+        file_name: .env.local
     - name: Generate deployment package
       run: zip -r deploy.zip . -x '*.git*'
     - name: Deploy to EB
