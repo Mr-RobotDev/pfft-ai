@@ -11,7 +11,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - /ssl_data:/etc/resty-auto-ssl
+      - ./nginx.conf:/etc/nginx/pfft.conf
       - ./certbot/www:/var/www/certbot/:ro
       - /certbot/conf:/etc/nginx/ssl/:ro
       - /etc/letsencrypt/live/pfft.bilalanjum.me/fullchain.pem:/etc/letsencrypt/live/pfft.bilalanjum.me/fullchain.pem
