@@ -13,6 +13,13 @@ jobs:
     steps:
     - name: Checkout source code
       uses: actions/checkout@v2
+    - name: Create Dotenv File
+      uses: actually-colab/github-action-create-env-file@v2.3
+      with:
+        envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        directory: aiservice
+        file_name: .env
     - name: Generate deployment package
       run: zip -r deploy.zip . -x '*.git*'
     - name: Deploy to EB
