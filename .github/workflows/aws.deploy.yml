@@ -20,7 +20,7 @@ jobs:
         envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
         directory: aiservice
         file_name: .env
-    - name: Create Dotenv File
+    - name: Create Dotenv File for NextJS
       uses: actually-colab/github-action-create-env-file@v2.3
       with:
         envkey_NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
