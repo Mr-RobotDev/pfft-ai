@@ -32,7 +32,7 @@ const HeadlineCarousel: React.FC<Props> = () => {
     <div className="">
       <ReactTicker
         data={myHeadlines?.map((item) => item)}
-        speed={54}
+        speed={(myHeadlines.length || 0) + 6}
         keyName="_id"
       />
     </div>
