@@ -97,7 +97,7 @@ def generate_article():
         new_prompt = f"{opinion} {headline} ###Add Article:"
     
         # Generate the article
-        new_result = generate_text(new_prompt, max_tokens=400, stop=["!Article Complete","!E"])
+        new_result = generate_text(new_prompt, max_tokens=400, stop=["!Article Complete","!E","###"])
         flagged, moderation_output = moderate_content(new_result)
     
         if not flagged:
@@ -105,7 +105,7 @@ def generate_article():
             print("jh" , new_result)
         else:
             # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, max_tokens=400, stop=["!Article Complete","!E"])
+            new_result = generate_text(new_prompt, max_tokens=400, stop=["!Article Complete","!E","###"])
             flagged, moderation_output = moderate_content(new_result)
             if not flagged:
                 print(f"\nArticle Generated")
