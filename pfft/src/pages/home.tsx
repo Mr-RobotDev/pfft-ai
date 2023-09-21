@@ -24,7 +24,7 @@ const HomePage: FC = () => {
   };
   useEffect(() => {
     setUser_id(session?.user?._id);
-  }, [session]);
+  }, [session?.user?._id]);
 
   const getUserPayment = async () => {
     const options: APICallerOptions = {

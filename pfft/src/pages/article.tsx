@@ -33,7 +33,7 @@ const ArticleGenerated: FC = () => {
   useEffect(() => {
     if(status === "loading" ) return
     generateArticle();
-  }, [session]);
+  }, [session?.user?._id]);
 
   const deductAmount = async () => {
     const options: APICallerOptions = {

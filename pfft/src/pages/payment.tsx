@@ -64,7 +64,7 @@ const Payment: FC = () => {
       }
     };
     if (session?.user?._id) getPaymentRecordList();
-  }, [session]);
+  }, [session?.user?._id]);
 
   useEffect(() => {
     const { vatValue, ToPay } = calculatePayment(selectedOption);

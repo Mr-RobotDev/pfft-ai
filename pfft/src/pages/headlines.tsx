@@ -25,7 +25,7 @@ const GeneratingHeadlines: FC = () => {
   useEffect(() => {
       if(status === "loading" ) return
     generateHeadlines();
-  }, [session]);
+  }, [session?.user?._id]);
 
   const deductAmount = async () => {
     const options: APICallerOptions = {

@@ -88,7 +88,7 @@ const Account: FC = () => {
       fetchTransactions();
       getPaymentRecordList();
     }
-  }, [session]);
+  }, [session?.user?._id]);
 
   const getPaymentRecordList = async () => {
     try {

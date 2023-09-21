@@ -112,7 +112,7 @@ const HistoryPage: FC = () => {
       }
     };
     if (session?.user?._id) getUserPayment();
-  }, [session]);
+  }, [session?.user?._id]);
 
   useEffect(() => {
     const checkSubscription = async () => {

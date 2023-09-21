@@ -43,7 +43,7 @@ const PaymentHistory: FC = () => {
       }
     };
     if (session?.user?._id) fetchTransactions();
-  }, [session, startingAfter]);
+  }, [session?.user?._id, startingAfter]);
 
   useEffect(() => {
     function handleScroll() {
