@@ -66,11 +66,11 @@ def moderate_content(text: str) -> Tuple[bool, dict]:
     return flagged, output
 
 # Load spreadsheet data
-df = pd.read_csv("checker.csv")
+df = pd.read_csv("checker.csv", encoding='utf-8')
 spreadsheet_data = df["text"].tolist()
 
 # Load blocked words
-df_blocked_words = pd.read_csv("blocked_words.csv")
+df_blocked_words = pd.read_csv("blocked_words.csv", encoding='utf-8')
 blocked_words = df_blocked_words["word"].tolist()
 
 @app.route("/")
