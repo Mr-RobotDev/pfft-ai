@@ -48,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                     router.push("/signup");
                   }}
                 >
-                  Signup
+                  signup
                 </span>
               </React.Fragment>
             ) : (
