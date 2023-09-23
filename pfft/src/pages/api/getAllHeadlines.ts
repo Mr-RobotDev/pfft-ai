@@ -2,29 +2,40 @@ import dbConnect from "@/database/conn";
 import type { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 import HistoryModel from "@/models/history/history.model";
-import { IHistory } from "@/models/history/history.types";
 async function getAllHeadlines(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") {
     return res.status(400).json({ message: "Invalid request method" });
   }
   try {
     await dbConnect();
-    const matchedHeadlines = await HistoryModel.find({}, undefined, {
-      limit: 50,
-      sort:{
-        _id: -1
+    const matchedHeadlines = await HistoryModel.aggregate([
+      {
+        $sort:{
+          _id: -1
+        }
       }
-    });
-    const headlinesArray = matchedHeadlines.map(
-      (headlines: IHistory) => headlines?.headline
-    );
+      ,{
+        $group: {
+          _id: "$headline",
+          latestId: { $first: "$_id" },
+        },
+      },
+      {
+        $sort:{
+          latestId: -1
+        }
+      },
+      {
+        $limit: 50
+      }
+    ]);
 
-    if (headlinesArray.length === 0) {
+    if (matchedHeadlines.length === 0) {
       return res
         .status(404)
         .json({ status: true, error: "No headlines found" });
     }
-    return res.status(200).json({ status: true, headlines: headlinesArray });
+    return res.status(200).json({ status: true, headlines: matchedHeadlines.map((headline) => headline._id) });
   } catch (error) {
     console.error(error);
     return res

@@ -17,20 +17,15 @@ interface BlogData {
 const Blog: FC = () => {
   const router = useRouter();
   // const blogID = router.query.blogID as string;
-
-  const [blogID, setBlogId] = useState<string>();
+  const [blogID, setBlogId] = useState<string>("");
   const [blog, setBlog] = useState<BlogData>({ headline: "", username: "" });
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [hash, setHash] = useState<string>(
-    router.asPath.split("%2F")[1] as string
-  );
-  useEffect(() => {
-    setHash(router.asPath.split("%2F")[1] as string);
-  });
+  const hash = (router.query.blogID || '') as string;
+  console.log(router.query);
   const getOrignalURL = async () => {
-    await getDestination(hash).then((url) => {
-      setBlogId(url.split("blogID=")[1]);
-    });
+    if(!hash) return;
+    const url = await getDestination(hash);
+    setBlogId(url.split("blogID=")[1]);
   };
   useEffect(() => {
     getOrignalURL();

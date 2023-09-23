@@ -34,7 +34,7 @@ export default async function CreateLink(
     const linkExists = await ShortModel.findOne({
       link,
     });
-    const shortUrl = `${process.env.NEXTAUTH_UR_BLOG}/${hash}`;
+    const shortUrl = `${process.env.NEXTAUTH_UR_BLOG}${hash}`;
     if (!linkExists) {
       const shortURL = new ShortModel({
         link: link,
