@@ -17,7 +17,7 @@ def jaccard_similarity(s1: set, s2: set) -> float:
     union = len(s1.union(s2))
     return intersection / union if union != 0 else 0
 
-def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.2) -> List[Tuple[str, str, float]]:
+def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.3) -> List[Tuple[str, str, float]]:
     results = []
     for output_text in gpt_output:
         output_words = set(output_text.split())
@@ -66,11 +66,11 @@ def moderate_content(text: str) -> Tuple[bool, dict]:
     return flagged, output
 
 # Load spreadsheet data
-df = pd.read_csv("checker.csv")
+df = pd.read_csv("checker.csv", encoding='utf-8', delimiter='\t')
 spreadsheet_data = df["text"].tolist()
 
 # Load blocked words
-df_blocked_words = pd.read_csv("blocked_words.csv")
+df_blocked_words = pd.read_csv("blocked_words.csv", encoding='utf-8', delimiter='\t')
 blocked_words = df_blocked_words["word"].tolist()
 
 @app.route("/")
