@@ -34,9 +34,9 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.8) -> str:
     response = openai.Completion.create(
-        engine="davinci:ft-ai100-2023-06-03-18-54-09",
+        engine=engine,
         prompt=prompt + " ->",
         temperature=temperature,
         max_tokens=max_tokens,
@@ -47,13 +47,13 @@ def generate_text(prompt: str, max_tokens: int = 74, stop: Optional[str] = None,
     return response.choices[0].text.strip()
 
     
-def check_and_retry(prompt: str) -> str:
-    output = generate_text(prompt, stop="###")
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+    output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, stop="###")
+        output = generate_text(prompt, engine=engine, stop="###")
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         if not plagiarism_results:
             return output
@@ -89,7 +89,7 @@ def generate_article():
         prompt = request_data['opinion']
         headline = request_data['headline']
         
-        beginning_text = ""
+        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
         ending_text = " ->"
         opinion = beginning_text + prompt + ending_text
         
@@ -97,7 +97,8 @@ def generate_article():
         new_prompt = f"{opinion} {headline} ###Add Article:"
     
         # Generate the article
-        new_result = generate_text(new_prompt, max_tokens=400, stop=["!Article Complete","!E","###"])
+        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
+
         flagged, moderation_output = moderate_content(new_result)
     
         if not flagged:
@@ -105,7 +106,7 @@ def generate_article():
             print("jh" , new_result)
         else:
             # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, max_tokens=400, stop=["!Article Complete","!E","###"])
+            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
             flagged, moderation_output = moderate_content(new_result)
             if not flagged:
                 print(f"\nArticle Generated")
@@ -136,7 +137,7 @@ def generate_headline():
         final_outputs = []
 
         for _ in range(8):
-            result = check_and_retry(prompt)
+            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
