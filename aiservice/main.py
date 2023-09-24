@@ -131,7 +131,7 @@ def generate_headline():
 
         initial_prompt = request_data['opinion']
         
-        beginning_text = " "
+        beginning_text = ""
         ending_text = " ->"
         prompt = beginning_text + initial_prompt + ending_text
         final_outputs = []
