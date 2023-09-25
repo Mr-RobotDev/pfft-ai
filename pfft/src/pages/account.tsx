@@ -16,7 +16,6 @@ import {
   PopoverContent,
   PopoverHandler,
 } from "@material-tailwind/react";
-import { set } from "lodash";
 
 interface Subscription {
   date: string;
