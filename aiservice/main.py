@@ -34,8 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 90, stop: Optional[str] = None, temperature: float = 0.8) -> str:
-    print(f"Generating text with prompt: {prompt}") # <-- Added this print statement
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 274, stop: Optional[str] = None, temperature: float = 0.8) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -49,14 +48,12 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", ma
 
     
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36") -> str:
-    print(f"First Attempt Output: {output}") # <-- Added this print statement
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
         return output
     else:
         output = generate_text(prompt, engine=engine, stop="###")
-        print(f"Second Attempt Output: {output}") # <-- Added this print statement
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         if not plagiarism_results:
             return output
@@ -66,7 +63,6 @@ def moderate_content(text: str) -> Tuple[bool, dict]:
     moderation_response = openai.Moderation.create(input=text)
     output = moderation_response["results"][0]
     flagged = output.get("flagged")
-    print(f"Moderation result for text '{text}': {flagged}") # <-- Added this print statement
     return flagged, output
 
 # Load spreadsheet data
@@ -101,7 +97,7 @@ def generate_article():
         new_prompt = f"{opinion} {headline} ###Add Article:"
     
         # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"],temperature=0.7)
+        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
 
         flagged, moderation_output = moderate_content(new_result)
     
@@ -110,9 +106,8 @@ def generate_article():
             print("jh" , new_result)
         else:
             # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"], temperature=0.7)
-            #flagged, moderation_output = moderate_content(new_result)
-            flagged = False
+            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
+            flagged, moderation_output = moderate_content(new_result)
             if not flagged:
                 print(f"\nArticle Generated")
                 print("jh" , new_result)
@@ -147,10 +142,7 @@ def generate_headline():
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
                     if not contains_blocked_words(result, blocked_words):
-                        final_outputs.append(result)
-                    else:
-                        print(f"Headline '{result}' contains blocked words.")  # <-- Correct placement for the print statement
-              
+                        final_outputs.append(result)              
         if not final_outputs:
             return jsonify({'status': True, 'headlines': final_outputs, 'prompt':prompt}), 400
         else:
