@@ -17,7 +17,7 @@ def jaccard_similarity(s1: set, s2: set) -> float:
     union = len(s1.union(s2))
     return intersection / union if union != 0 else 0
 
-def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.4) -> List[Tuple[str, str, float]]:
+def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.7) -> List[Tuple[str, str, float]]:
     results = []
     for output_text in gpt_output:
         output_words = set(output_text.split())
