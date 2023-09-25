@@ -101,7 +101,8 @@ const StripePaymentForm: React.FC<Props> = ({ orderNo, toPay, credit }) => {
     customerID: any,
     TransactionID: string,
     expires: string,
-    created: number
+    created: number,
+    subscriptionId: string = "",
   ) => {
     await fetch("/api/savePaymentHistory", {
       method: "POST",
@@ -115,6 +116,7 @@ const StripePaymentForm: React.FC<Props> = ({ orderNo, toPay, credit }) => {
         expires: expires,
         created: created,
         orderNo: orderNo,
+        subscriptionId: subscriptionId,
         paid: parseFloat(toPay),
         credit: parseFloat(credit),
       }),
@@ -222,7 +224,8 @@ const StripePaymentForm: React.FC<Props> = ({ orderNo, toPay, credit }) => {
                 data.customer,
                 confirm?.paymentIntent?.id,
                 data.expires,
-                confirm.paymentIntent.created
+                confirm.paymentIntent.created,
+                data.subscriptionId
               );
               setLoading(false);
               showToast("Payment Successful! Subscription active.");
@@ -287,7 +290,8 @@ const StripePaymentForm: React.FC<Props> = ({ orderNo, toPay, credit }) => {
             data.customer,
             confirm?.paymentIntent?.id,
             data.expires,
-            confirm.paymentIntent.created
+            confirm.paymentIntent.created,
+            data.subscriptionId
           );
 
           showToast("Payment Successful! Subscription active.");

@@ -9,5 +9,6 @@ export interface StripeTypes extends Document {
   expiry: Date;
   amount: number;
   credit: number;
+  subscriptionId: string;
 }
 export type HistoryDocument = StripeTypes & Document;

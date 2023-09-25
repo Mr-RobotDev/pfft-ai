@@ -20,6 +20,7 @@ export default async function handler(
       orderNo,
       credit,
       paid,
+      subscriptionId
     } = req.body;
     if (
       !user_id ||
@@ -29,7 +30,8 @@ export default async function handler(
       !created ||
       !orderNo ||
       !credit ||
-      !paid
+      !paid ||
+      !subscriptionId
     ) {
       return res.status(400).json({ message: "Missing required data" });
     }
@@ -44,7 +46,10 @@ export default async function handler(
       amount: paid,
       credit: credit,
       orderNo: orderNo,
+      subscriptionId: subscriptionId
     });
+
+    console.log(stripeHistory);
 
     await stripeHistory.save();
 

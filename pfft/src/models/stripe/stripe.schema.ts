@@ -39,6 +39,10 @@ import mongoose from 'mongoose';
     type:Number,
     required:true,
   },
+  subscriptionId:{
+    type:String,
+    required:true,
+  }
 });
 
 export default stripeSchema;

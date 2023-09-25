@@ -1,7 +1,7 @@
 "use client";
 import { Meta } from "@/layouts/Meta";
 import { Main } from "@/templates/Main";
-import { useState, useEffect, FC } from "react";
+import { useState, useEffect, FC, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import HistoryTable from "@components/historyTable";
@@ -10,12 +10,21 @@ import APICaller from "@/lib/API_Caller";
 import PulseLoader from "react-spinners/PulseLoader";
 import "animate.css/animate.min.css";
 import { calculatePayment, toRegularDate } from "@/utils/helper";
+import showToast from "@/lib/toast";
+import {
+  Popover,
+  PopoverContent,
+  PopoverHandler,
+} from "@material-tailwind/react";
+import { set } from "lodash";
+
 interface Subscription {
   date: string;
   credit: number;
   amount: number;
   expiry: string;
   orderNo: number;
+  subscriptionId: string;
   // Other properties of the subscription object
 }
 
@@ -37,10 +46,36 @@ const Account: FC = () => {
     useState<boolean>(false);
   const [subscription, setSubscription] = useState<Subscription | undefined>();
   const [selectedOption, setSelectedOption] = useState<string>("1000");
+  const [showCancel, setShowCancel] = useState<boolean>(false);
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
   };
+
+  const cancelSubscription = useCallback(async () => {
+    try {
+      setShowCancel(false);
+      const response = await fetch(
+        `/api/cancelSubscription?userID=${session?.user?._id}`,
+
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            subscriptionId: subscription?.subscriptionId,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (data) {
+        setIsSubscriptionValid(false);
+      }
+    } catch (error) {
+      showToast((error as Error).message);
+    }
+  }, [subscription]);
 
   useEffect(() => {
     const checkSubscription = async () => {
@@ -466,6 +501,52 @@ const Account: FC = () => {
                             </td>
                             <td className="text-end xms:text-[20px]">
                               {toRegularDate(subscription?.date as string)}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colSpan={2}>
+                              <div className="text-center my-[2.6rem] ">
+                                <Popover
+                                  placement="bottom"
+                                  handler={(v) => setShowCancel(v)}
+                                  open={showCancel}
+                                >
+                                  <PopoverHandler>
+                                    <button
+                                      className=" px-10 py-2 bg-gradient-red-1-to-red-2 text-white font-courierPrime font-bold "
+                                    >
+                                      Cancel
+                                    </button>
+                                  </PopoverHandler>
+                                  <PopoverContent className="w-96">
+                                    <div
+                                      className="text-[#44576D] text-[10px] font-courierPrime font-semibold
+                                      xs:text-[13px]
+                                      sm:text-[14px]
+                                      slg:text-[22px]
+                                      xl:text-[25px]
+                                      animate__animated animate __slideInRight"
+                                    >
+                                      Are you sure you want to cancel your
+                                      subscription?
+                                    </div>
+                                    <div className="text-center my-[1rem] ">
+                                      <button
+                                        onClick={cancelSubscription}
+                                        className="px-10 py-2 mx-1 bg-gradient-red-1-to-red-2 text-white font-courierPrime font-bold "
+                                      >
+                                        Yes
+                                      </button>
+                                      <button
+                                        onClick={() => setShowCancel(false)}
+                                        className="px-10 mx-1 py-2 bg-gradient-red-1-to-red-2 text-white font-courierPrime font-bold"
+                                      >
+                                        No
+                                      </button>
+                                    </div>
+                                  </PopoverContent>
+                                </Popover>
+                              </div>
                             </td>
                           </tr>
                         </tbody>

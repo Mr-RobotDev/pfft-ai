@@ -8,7 +8,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    console.log(process.env.STRIPE_SECRET_KEY);
     if (req.method !== "POST") {
       return res.status(400).json({ message: "Invalid request method" });
     }
@@ -58,6 +57,7 @@ export default async function handler(
       clientSecret: subscription.latest_invoice.payment_intent.client_secret,
       customer: customer.id,
       expires: expiresOn,
+      subscriptionId: subscription.id,
     });
   } catch (err) {
     console.error(err);

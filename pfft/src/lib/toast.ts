@@ -2,7 +2,7 @@ import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
-const showToast = async (msg: String) => {
+const showToast = async (msg: React.ReactNode) => {
   return toast(msg, {
     position: "top-right",
     autoClose: 3000,
