@@ -35,6 +35,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
     return False
 
 def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 90, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+    print(f"Generating text with prompt: {prompt}") # <-- Added this print statement
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -48,12 +49,14 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", ma
 
     
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36") -> str:
+    print(f"First Attempt Output: {output}") # <-- Added this print statement
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
         return output
     else:
         output = generate_text(prompt, engine=engine, stop="###")
+        print(f"Second Attempt Output: {output}") # <-- Added this print statement
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         if not plagiarism_results:
             return output
@@ -63,6 +66,7 @@ def moderate_content(text: str) -> Tuple[bool, dict]:
     moderation_response = openai.Moderation.create(input=text)
     output = moderation_response["results"][0]
     flagged = output.get("flagged")
+    print(f"Moderation result for text '{text}': {flagged}") # <-- Added this print statement
     return flagged, output
 
 # Load spreadsheet data
@@ -143,7 +147,10 @@ def generate_headline():
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
                     if not contains_blocked_words(result, blocked_words):
-                        final_outputs.append(result)              
+                        final_outputs.append(result)
+                    else:
+                        print(f"Headline '{result}' contains blocked words.")  # <-- Correct placement for the print statement
+              
         if not final_outputs:
             return jsonify({'status': True, 'headlines': final_outputs, 'prompt':prompt}), 400
         else:
