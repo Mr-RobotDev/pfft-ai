@@ -17,7 +17,7 @@ def jaccard_similarity(s1: set, s2: set) -> float:
     union = len(s1.union(s2))
     return intersection / union if union != 0 else 0
 
-def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 1.0) -> List[Tuple[str, str, float]]:
+def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.4) -> List[Tuple[str, str, float]]:
     results = []
     for output_text in gpt_output:
         output_words = set(output_text.split())
@@ -34,7 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 90, stop: Optional[str] = None, temperature: float = 0.8) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -97,7 +97,7 @@ def generate_article():
         new_prompt = f"{opinion} {headline} ###Add Article:"
     
         # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
+        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"],temperature=0.7)
 
         flagged, moderation_output = moderate_content(new_result)
     
@@ -106,7 +106,7 @@ def generate_article():
             print("jh" , new_result)
         else:
             # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
+            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"], temperature=0.7)
             #flagged, moderation_output = moderate_content(new_result)
             flagged = False
             if not flagged:
