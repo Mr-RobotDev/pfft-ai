@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 180, stop: Optional[str] = None, temperature: float = 0.75) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 200, temperature: float = 0.75) -> str:
     start_time = time.time()  # Start time for measuring response times
     try:
         print(f"Generating text with prompt: {prompt}")
@@ -50,7 +50,7 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
             temperature=temperature,
             max_tokens=max_tokens,
             n=1,
-            stop=stop,
+            stop=["###"],
             timeout=30,
         )
         print(f"Response received in {time.time() - start_time} seconds.")
