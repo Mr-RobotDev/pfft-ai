@@ -17,24 +17,28 @@ def jaccard_similarity(s1: set, s2: set) -> float:
     union = len(s1.union(s2))
     return intersection / union if union != 0 else 0
 
-def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.3) -> List[Tuple[str, str, float]]:
+def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.7) -> List[Tuple[str, str, float]]:
     results = []
+    print("Checking plagiarism for GPT outputs...")
     for output_text in gpt_output:
         output_words = set(output_text.split())
         for data_text in spreadsheet_data_list:
             data_words = set(data_text.split())
             similarity = jaccard_similarity(output_words, data_words)
             if similarity > threshold:
+                print(f"Found plagiarized content with similarity: {similarity}")
                 results.append((data_text, output_text, similarity))
     return results
 
 def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
     for blocked_word in blocked_words_list:
         if blocked_word.lower() in text.lower():
+            print(f"Blocked word found in text: {blocked_word}")
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 274, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+    print(f"Generating text with prompt: {prompt}")
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -46,23 +50,31 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
     )
     return response.choices[0].text.strip()
 
-    
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36") -> str:
+    print(f"Checking and retrying for prompt: {prompt}")
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
+        print("No plagiarism found in the first attempt.")
         return output
     else:
+        print("Plagiarism found in the first attempt. Retrying...")
         output = generate_text(prompt, engine=engine, stop="###")
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         if not plagiarism_results:
+            print("No plagiarism found in the second attempt.")
             return output
     return None
 
 def moderate_content(text: str) -> Tuple[bool, dict]:
+    print(f"Moderating content: {text}")
     moderation_response = openai.Moderation.create(input=text)
     output = moderation_response["results"][0]
     flagged = output.get("flagged")
+    if flagged:
+        print("Content flagged!")
+    else:
+        print("Content passed moderation!")
     return flagged, output
 
 # Load spreadsheet data
@@ -131,13 +143,13 @@ def generate_headline():
 
         initial_prompt = request_data['opinion']
         
-        beginning_text = ""
+        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
         ending_text = " ->"
         prompt = beginning_text + initial_prompt + ending_text
         final_outputs = []
 
         for _ in range(7):
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36")
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
