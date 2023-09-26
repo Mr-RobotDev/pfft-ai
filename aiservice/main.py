@@ -38,17 +38,21 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
     return False
 
 def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 274, stop: Optional[str] = None, temperature: float = 0.8) -> str:
-    print(f"Generating text with prompt: {prompt}")
-    response = openai.Completion.create(
-        engine=engine,
-        prompt=prompt + " ->",
-        temperature=temperature,
-        max_tokens=max_tokens,
-        n=1,
-        stop=stop,
-        timeout=30,
-    )
-    return response.choices[0].text.strip()
+    try:
+        print(f"Generating text with prompt: {prompt}")
+        response = openai.Completion.create(
+            engine=engine,
+            prompt=prompt + " ->",
+            temperature=temperature,
+            max_tokens=max_tokens,
+            n=1,
+            stop=stop,
+            timeout=30,
+        )
+        return response.choices[0].text.strip()
+    except openai.error.OpenAIError as e:   # Catch OpenAI specific errors
+        print(f"Error from OpenAI: {e}")
+        return ""
 
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36") -> str:
     print(f"Checking and retrying for prompt: {prompt}")
@@ -101,7 +105,7 @@ def generate_article():
         prompt = request_data['opinion']
         headline = request_data['headline']
         
-        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
+        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
         ending_text = " ->"
         opinion = beginning_text + prompt + ending_text
         
