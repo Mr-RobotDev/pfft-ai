@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 274, stop="###", temperature: float = 0.8) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 80, stop="###", temperature: float = 0.75) -> str:
     start_time = time.time()  # Start time for measuring response times
     try:
         print(f"Generating text with prompt: {prompt}")
@@ -60,7 +60,7 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", ma
         print(f"Error from OpenAI: {e}")
         return ""
 
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
     print(f"Checking and retrying for prompt: {prompt}")
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
@@ -113,7 +113,7 @@ def generate_article():
         prompt = request_data['opinion']
         headline = request_data['headline']
         
-        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
+        beginning_text = ""
         ending_text = " ->"
         opinion = beginning_text + prompt + ending_text
         
