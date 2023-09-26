@@ -46,7 +46,7 @@ jobs:
         envkey_IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
         directory: pfft
         file_name: .env.local
-    - naame: Add execution permission to shell scripts
+    - name: Add execution permission to shell scripts
       run: chmod +x ./.platform/hooks/predeploy/01_clean.sh
     - name: Generate deployment package
       run: zip -r deploy.zip . -x '*.git*'
