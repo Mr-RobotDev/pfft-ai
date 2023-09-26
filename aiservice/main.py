@@ -17,7 +17,7 @@ def jaccard_similarity(s1: set, s2: set) -> float:
     union = len(s1.union(s2))
     return intersection / union if union != 0 else 0
 
-def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.8) -> List[Tuple[str, str, float]]:
+def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.3) -> List[Tuple[str, str, float]]:
     results = []
     for output_text in gpt_output:
         output_words = set(output_text.split())
@@ -34,7 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 374, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.8) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -47,7 +47,7 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", ma
     return response.choices[0].text.strip()
 
     
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
@@ -131,13 +131,13 @@ def generate_headline():
 
         initial_prompt = request_data['opinion']
         
-        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
+        beginning_text = ""
         ending_text = " ->"
         prompt = beginning_text + initial_prompt + ending_text
         final_outputs = []
 
-        for _ in range(10):
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36")
+        for _ in range(7):
+            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
