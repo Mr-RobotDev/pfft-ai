@@ -2,6 +2,7 @@
 # pip install openai
 from flask import Flask, request, jsonify
 import openai
+import time
 import pandas as pd
 from typing import List, Tuple, Optional
 from dotenv import load_dotenv
@@ -28,6 +29,8 @@ def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], th
             if similarity > threshold:
                 print(f"Found plagiarized content with similarity: {similarity}")
                 results.append((data_text, output_text, similarity))
+    if not results:
+        print("No plagiarism detected.")
     return results
 
 def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
@@ -38,6 +41,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
     return False
 
 def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens: int = 274, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+    start_time = time.time()  # Start time for measuring response times
     try:
         print(f"Generating text with prompt: {prompt}")
         response = openai.Completion.create(
@@ -49,6 +53,8 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36", ma
             stop=stop,
             timeout=30,
         )
+        print(f"Response received in {time.time() - start_time} seconds.")
+        print(response)  # <-- This will print the entire response from OpenAI.
         return response.choices[0].text.strip()
     except openai.error.OpenAIError as e:   # Catch OpenAI specific errors
         print(f"Error from OpenAI: {e}")
@@ -71,8 +77,10 @@ def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-22-06-41-36") 
     return None
 
 def moderate_content(text: str) -> Tuple[bool, dict]:
+    start_time = time.time()  # Start time for measuring response times
     print(f"Moderating content: {text}")
     moderation_response = openai.Moderation.create(input=text)
+    print(f"Moderation response received in {time.time() - start_time} seconds.")
     output = moderation_response["results"][0]
     flagged = output.get("flagged")
     if flagged:
@@ -140,6 +148,7 @@ def generate_article():
     
 @app.route('/generate_headline', methods=['POST'])
 def generate_headline():
+    print("Generate headline endpoint hit.")
     try:
         request_data = request.get_json()
         if 'opinion' not in request_data:
@@ -165,6 +174,7 @@ def generate_headline():
             return jsonify({'status': True, 'headlines': final_outputs ,'prompt':prompt}), 200
     except Exception as e:
         print(e)
+        print(f"Error in generate_headline: {e}")
         return jsonify({'error': str(e)}), 500
 
 application = app
