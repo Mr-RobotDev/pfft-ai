@@ -1,2 +1,2 @@
 #!/usr/bin/env bash 
-docker builder prune
+docker builder prune -f
