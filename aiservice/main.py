@@ -18,7 +18,7 @@ def jaccard_similarity(s1: set, s2: set) -> float:
     union = len(s1.union(s2))
     return intersection / union if union != 0 else 0
 
-def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.7) -> List[Tuple[str, str, float]]:
+def check_plagiarism(gpt_output: List[str], spreadsheet_data_list: List[str], threshold: float = 0.3) -> List[Tuple[str, str, float]]:
     results = []
     print("Checking plagiarism for GPT outputs...")
     for output_text in gpt_output:
@@ -40,15 +40,15 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 200, temperature: float = 0.75) -> str:
+def generate_text(prompt: str, temperature: float = 0.75) -> str:
     start_time = time.time()  # Start time for measuring response times
     try:
         print(f"Generating text with prompt: {prompt}")
         response = openai.Completion.create(
-            engine=engine,
+            engine="davinci:ft-ai100-2023-05-21-20-39-33",
             prompt=prompt + " ->",
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_tokens=400,
             n=1,
             stop=["###"],
             timeout=30,
@@ -60,7 +60,7 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
         print(f"Error from OpenAI: {e}")
         return ""
 
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-21-20-39-33") -> str:
     print(f"Checking and retrying for prompt: {prompt}")
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
@@ -113,7 +113,7 @@ def generate_article():
         prompt = request_data['opinion']
         headline = request_data['headline']
         
-        beginning_text = ""
+        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
         ending_text = " ->"
         opinion = beginning_text + prompt + ending_text
         
