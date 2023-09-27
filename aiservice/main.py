@@ -45,7 +45,7 @@ def generate_text(prompt: str, temperature: float = 0.75) -> str:
     try:
         print(f"Generating text with prompt: {prompt}")
         response = openai.Completion.create(
-            engine="davinci:ft-ai100-2023-05-21-20-39-33",
+            model="davinci:ft-ai100-2023-05-21-20-39-33",
             prompt=prompt + " ->",
             temperature=temperature,
             max_tokens=400,
@@ -60,16 +60,16 @@ def generate_text(prompt: str, temperature: float = 0.75) -> str:
         print(f"Error from OpenAI: {e}")
         return ""
 
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-21-20-39-33") -> str:
+def check_and_retry(prompt: str, model="davinci:ft-ai100-2023-05-21-20-39-33") -> str:
     print(f"Checking and retrying for prompt: {prompt}")
-    output = generate_text(prompt, engine=engine, stop="###")
+    output = generate_text(prompt, model=model, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
         print("No plagiarism found in the first attempt.")
         return output
     else:
         print("Plagiarism found in the first attempt. Retrying...")
-        output = generate_text(prompt, engine=engine, stop="###")
+        output = generate_text(prompt, model=model, stop="###")
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         if not plagiarism_results:
             print("No plagiarism found in the second attempt.")
@@ -121,7 +121,7 @@ def generate_article():
         new_prompt = f"{opinion} {headline} ###Add Article:"
     
         # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
+        new_result = generate_text(new_prompt, model="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
 
         flagged, moderation_output = moderate_content(new_result)
     
@@ -130,7 +130,7 @@ def generate_article():
             print("jh" , new_result)
         else:
             # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
+            new_result = generate_text(new_prompt, model="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
             flagged, moderation_output = moderate_content(new_result)
             if not flagged:
                 print(f"\nArticle Generated")
@@ -162,7 +162,7 @@ def generate_headline():
         final_outputs = []
 
         for _ in range(7):
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36")
+            result = check_and_retry(prompt, model="davinci:ft-ai100-2023-05-22-06-41-36")
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
