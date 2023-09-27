@@ -45,7 +45,7 @@ def generate_text(prompt: str, temperature: float = 0.75) -> str:
     try:
         print(f"Generating text with prompt: {prompt}")
         response = openai.Completion.create(
-            model="davinci:ft-ai100-2023-05-21-20-39-33",
+            model="davinci:ft-ai100-2023-05-21-16-30-57",
             prompt=prompt + " ->",
             temperature=temperature,
             max_tokens=400,
@@ -53,6 +53,14 @@ def generate_text(prompt: str, temperature: float = 0.75) -> str:
             stop=["###"],
             timeout=30,
         )
+            # Print parameters
+        print("----- Parameters Passed to OpenAI -----")
+        print(f"Engine: {engine}")
+        print(f"Prompt: {prompt}")
+        print(f"Max Tokens: {max_tokens}")
+        print(f"Stop: {stop}")
+        print(f"Temperature: {temperature}")
+        print("--------------------------------------")
         print(f"Response received in {time.time() - start_time} seconds.")
         print(response)  # <-- This will print the entire response from OpenAI.
         return response.choices[0].text.strip()
