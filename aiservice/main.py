@@ -45,7 +45,7 @@ def generate_text(prompt: str, temperature: float = 0.75) -> str:
     try:
         print(f"Generating text with prompt: {prompt}")
         response = openai.Completion.create(
-            model="davinci:ft-ai100-2023-05-21-16-30-57",
+            model="davinci:ft-ai100-2023-05-20-07-17-54",
             prompt=prompt + " ->",
             temperature=temperature,
             max_tokens=400,
@@ -68,7 +68,7 @@ def generate_text(prompt: str, temperature: float = 0.75) -> str:
         print(f"Error from OpenAI: {e}")
         return ""
 
-def check_and_retry(prompt: str, model="davinci:ft-ai100-2023-05-21-20-39-33") -> str:
+def check_and_retry(prompt: str, model="davinci:ft-ai100-2023-05-20-07-17-54") -> str:
     print(f"Checking and retrying for prompt: {prompt}")
     output = generate_text(prompt, model=model, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
