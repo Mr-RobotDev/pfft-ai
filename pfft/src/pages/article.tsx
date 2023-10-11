@@ -157,10 +157,10 @@ const ArticleGenerated: FC = () => {
                       JSON.stringify({ ip, count: 1 })
                     );
                     generateArticle();
-                  } else if (pffting.count >= 5) {
+                  } else if (pffting && pffting.count >= 10) {
                     showToast(
                       <div>
-                        <div>Create an account to continue for free.</div>
+                        <div>Create a free account to continue.</div>
                         <div className="flex justify-start mt-2">
                           <button
                             onClick={() => {
@@ -168,7 +168,7 @@ const ArticleGenerated: FC = () => {
                             }}
                             className="bg-gradient-red-1-to-red-2 text-white rounded-full px-4 py-2"
                           >
-                            Sign Up
+                            Continue for Free
                           </button>
                         </div>
                       </div>
@@ -285,7 +285,10 @@ const ArticleGenerated: FC = () => {
               <div className="font-courierPrime mt-10 text-[22px]">
                 {segments?.map((segment, index) => {
                   return (
-                    <div key={index} className="mb-2" dangerouslySetInnerHTML={{ __html: segment }} />
+                    <React.Fragment key={index}>
+                    {segment}
+                    <br />
+                    </React.Fragment>
                   );
                 })}
               </div>
