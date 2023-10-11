@@ -13,7 +13,6 @@ async function generateArticles(req: NextApiRequest, res: NextApiResponse) {
     await dbConnect();
     const headline = req.query.headline as string;
     const userID = req.query.userID as string;
-    const opinion = req.query.opinion as string;
 
     const response = await fetch(
       `${process.env.PFFT_AI_API_URL}/generate_article`,
@@ -33,7 +32,6 @@ async function generateArticles(req: NextApiRequest, res: NextApiResponse) {
         article: article.article,
         userId: new mongoose.Types.ObjectId(userID),
         headline: headline,
-        opinion: opinion.replace('+', ' '),
       });
       await history.save().then((result: any) => {
         res.status(200).json({ article: article, blog_id: result._id });
