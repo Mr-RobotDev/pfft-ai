@@ -13,6 +13,7 @@ async function generateArticles(req: NextApiRequest, res: NextApiResponse) {
     await dbConnect();
     const headline = req.query.headline as string;
     const userID = req.query.userID as string;
+    const opinion = req.query.opinion as string;
 
     const response = await fetch(
       `${process.env.PFFT_AI_API_URL}/generate_article`,
