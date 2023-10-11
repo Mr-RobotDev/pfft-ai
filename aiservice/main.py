@@ -154,5 +154,4 @@ def generate_headline():
 application = app
 
 if __name__ == '__main__':
-    
     app.run(host='localhost', port=105)
