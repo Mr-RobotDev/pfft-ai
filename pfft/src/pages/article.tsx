@@ -73,7 +73,7 @@ const ArticleGenerated: FC = () => {
     };
     const options: APICallerOptions = {
       body: requestBody,
-      URL: `/api/generateArticle?headline=${headline}&userID=${user_id} `,
+      URL: `/api/generateArticle?headline=${headline}&userID=${user_id}&opinion=${opinion}`,
       method: "POST",
     };
     try {

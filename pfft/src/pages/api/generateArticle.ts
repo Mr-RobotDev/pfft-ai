@@ -32,6 +32,7 @@ async function generateArticles(req: NextApiRequest, res: NextApiResponse) {
         article: article.article,
         userId: new mongoose.Types.ObjectId(userID),
         headline: headline,
+        opinion: opinion,
       });
       await history.save().then((result: any) => {
         res.status(200).json({ article: article, blog_id: result._id });
