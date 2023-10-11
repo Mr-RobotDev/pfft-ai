@@ -75,10 +75,10 @@ const HomePage: FC = () => {
     if (!user_id) {
       let pffting = localStorage.pffting;
       if (pffting) pffting = JSON.parse(pffting);
-      if (pffting && pffting.count >= 10) {
+      if (pffting && pffting.count >= 5) {
         showToast(
           <div>
-            <div>Create a free account to continue.</div>
+            <div>Create an account to continue for free.</div>
             <div className="flex justify-start mt-2">
               <button
                 onClick={() => {
@@ -86,7 +86,7 @@ const HomePage: FC = () => {
                 }}
                 className="bg-gradient-red-1-to-red-2 text-white rounded-full px-4 py-2"
               >
-                Continue for Free
+                Sign Up
               </button>
             </div>
           </div>
@@ -113,15 +113,12 @@ const HomePage: FC = () => {
             getSubscriptionDetails()
               .then((res) => {
                 const currentDate = new Date().toLocaleDateString();
-                const expiry = (res && res.expiry) || "";
+                const expiry = res.expiry;
 
                 const currentDateObj = new Date(currentDate);
                 const expiryObj = new Date(expiry);
 
-                if (
-                  expiryObj.toString() === "Invalid Date" ||
-                  currentDateObj > expiryObj
-                ) {
+                if (currentDateObj > expiryObj) {
                   showToast(
                     "Your Monthly Subscription has been expired. Please renew your subscription"
                   );
