@@ -285,7 +285,9 @@ const ArticleGenerated: FC = () => {
               <div className="font-courierPrime mt-10 text-[22px]">
                 {segments?.map((segment, index) => {
                   return (
-                    <div key={index} className="mb-2" dangerouslySetInnerHTML={{ __html: segment }} />
+                    <div key={index} className="mb-2 article-container" dangerouslySetInnerHTML={{
+                      __html: segment
+                    }} />
                   );
                 })}
               </div>
