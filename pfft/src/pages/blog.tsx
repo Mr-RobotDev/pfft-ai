@@ -87,10 +87,9 @@ const Blog: FC = () => {
                 ?.split("<br>")
                 .map((line: string, index: number) => {
                   return (
-                    <React.Fragment key={line + index}>
-                      {line}
-                      <br />
-                    </React.Fragment>
+                    <div key={index} className="mb-2 article-container" dangerouslySetInnerHTML={{
+                      __html: line
+                    }} />
                   );
                 })}
             </div>
