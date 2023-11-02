@@ -64,7 +64,7 @@ const Blog: FC = () => {
           </div>
         ) : (
           <>
-            <h1 className="text-2xl font-bold break-all font-copperplate mb-6 text-black-100">
+            <h1 className="article-header font-bold break-all font-copperplate mb-6 text-black-100">
               {blog.headline}
             </h1>
             <div className="flex grid-cols-2">

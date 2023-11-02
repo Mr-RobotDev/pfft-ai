@@ -257,7 +257,7 @@ const ArticleGenerated: FC = () => {
           text-center px-4
           "
           >
-            <h1 className="text-2xl font-bold font-copperplate mb-6 text-black-100">
+            <h1 className="article-header font-bold font-copperplate mb-6 text-black-100">
               {headline}
             </h1>
             <div className="md:flex-row items-center sm:flex flex-row text-center ">

@@ -79,6 +79,10 @@ form {
   white-space: nowrap !important;
 }
 
+.article-header {
+  font-size: 3.5rem;
+}
+
 .article-container {
   margin-bottom: 2.5rem;
 }
