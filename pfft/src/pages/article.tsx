@@ -257,14 +257,14 @@ const ArticleGenerated: FC = () => {
           text-center px-4
           "
           >
-            <h2 className="text-2xl font-bold font-copperplate mb-6 text-black-100">
+            <h1 className="text-2xl font-bold font-copperplate mb-6 text-black-100">
               {headline}
-            </h2>
+            </h1>
             <div className="md:flex-row items-center sm:flex flex-row text-center ">
               <div className="border-b-[3px] border-[#D7D7D7] w-100 xxs:pb-6 sm:flex sm:flex-row text-center flex-row pb-2 ">
-                <h1 className="text-lg font-courierPrime text-[#44576D] pt-2">
+                <h2 className="text-lg font-courierPrime text-[#44576D] pt-2">
                   by AI {session?.user?.name}
-                </h1>
+                </h2>
                 <div className="grid justify-center">
                   <div
                     className="bg-gradient-to-r from-orange-100 to-orange-200 hover:bg-orange-100  w-fit 
