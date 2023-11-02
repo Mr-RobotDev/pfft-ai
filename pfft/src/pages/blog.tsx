@@ -64,13 +64,13 @@ const Blog: FC = () => {
           </div>
         ) : (
           <>
-            <h2 className="text-2xl font-bold break-all font-copperplate mb-6 text-black-100">
+            <h1 className="article-header font-bold break-all font-copperplate mb-6 text-black-100">
               {blog.headline}
-            </h2>
+            </h1>
             <div className="flex grid-cols-2">
-              <h1 className="text-sm mt-2 font-courierPrime text-[#44576D] pr-5 xms:text-lg">
+              <h2 className="text-sm mt-2 font-courierPrime text-[#44576D] pr-5 xms:text-lg">
                 By AI {blog.username}
-              </h1>
+              </h2>
               <div className="w-[5.8rem] mb-5 ">
                 <div
                   className="bg-gradient-to-r from-orange-100 to-orange-200 hover:bg-orange-100 

@@ -79,8 +79,23 @@ form {
   white-space: nowrap !important;
 }
 
+.article-header {
+  font-size: 3.5rem;
+}
+
+.article-container {
+  margin-bottom: 2.5rem;
+}
+
 .article-container h1,.article-container h2,.article-container h3,.article-container h4,.article-container h5 ,.article-container h6{
   font-weight: bold;
+  font-size: 2rem;
+  line-height: 5rem;
+}
+
+.article-container p {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 @media (min-width: 280px) {
