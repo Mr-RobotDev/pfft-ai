@@ -40,37 +40,6 @@ const HomePage: FC = () => {
     }
   };
 
-  const getSubscriptionDetails = async () => {
-    const options: APICallerOptions = {
-      body: {},
-      URL: `/api/getsubscriptionDetails?userID=${user_id}`,
-      method: "GET",
-    };
-
-    try {
-      return await APICaller(options);
-    } catch (error) {
-      console.error(error); // Handle the error
-    }
-  };
-  const updateCreditRecord = async () => {
-    try {
-      await fetch("/api/updateUserCredit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userID: session?.user?._id,
-          credit: 0,
-        }),
-      });
-
-      return;
-    } catch (error) {
-      console.error(error); // Handle the error
-    }
-  };
   const handlePFFT = async () => {
     if (!user_id) {
       let pffting = localStorage.pffting;
