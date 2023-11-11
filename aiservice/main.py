@@ -47,7 +47,7 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
     return response.choices[0].text.strip()
 
     
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-11-09-14-41-48") -> str:
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
