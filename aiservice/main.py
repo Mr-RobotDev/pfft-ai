@@ -34,7 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.8) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
