@@ -108,20 +108,6 @@ const ArticleGenerated: FC = () => {
       .flatMap((segment) => segment?.split("<br>"));
     setSegments(updatedSegments);
   }, [article]);
-
-  const getSubscriptionDetails = async () => {
-    const options: APICallerOptions = {
-      body: {},
-      URL: `/api/getsubscriptionDetails?userID=${session?.user?._id}`,
-      method: "GET",
-    };
-
-    try {
-      return await APICaller(options);
-    } catch (error) {
-      console.error(error); // Handle the error
-    }
-  };
   return (
     <>
       <Main meta={<Meta title="Article" description="Article" />}>
@@ -190,27 +176,25 @@ const ArticleGenerated: FC = () => {
                       showToast("Please Subscribe to monthly plan.");
                     }
                   } else {
-                    getSubscriptionDetails()
-                      .then((res) => {
-                        const currentDate = new Date().toLocaleDateString();
-                        const expiry = res.expiry;
-
-                        const currentDateObj = new Date(currentDate);
-                        const expiryObj = new Date(expiry);
-
-                        if (currentDateObj > expiryObj) {
-                          showToast("Current date is after the expiry date");
-                        } else if (currentDateObj < expiryObj) {
-                          generateArticle();
-                        }
-                      })
-                      .catch((error) => {
-                        console.error(
-                          "Error fetching subscription details:",
-                          error
-                        );
-                        // Handle the error here
-                      });
+                    if (paymentInfo?.credit > 0) {
+                      generateArticle();
+                    } else {
+                      showToast(
+                        <div>
+                          <div>Oh no, you are out of free credits! But good news, you can give us money here!</div>
+                          <div className="flex justify-start mt-2">
+                            <button
+                              onClick={() => {
+                                router.push("/account");
+                              }}
+                              className="bg-gradient-red-1-to-red-2 text-white rounded-full px-4 py-2"
+                            >
+                              My Account
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    }
                   }
                 });
               }}
