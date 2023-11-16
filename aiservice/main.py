@@ -46,6 +46,22 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
     )
     return response.choices[0].text.strip()
 
+def process_opinion(opinion: str, processing_count: int) -> str:
+    if processing_count % 2 == 0:
+        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. End with ###\n\nINPUT: " + opinion
+    else:
+        prompt = "INSTRUCTIONS: take the input opinion and justify it hyperbolically with a specific detail or two in one short sentence with no punctuation, then say nothing else. End with ###\n\nINPUT: " + opinion
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        temperature=0.75,
+        max_tokens=60,
+        stop=["###"]
+    )
+
+    processed_opinion = response.choices[0].text.strip()
+    return processed_opinion
     
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
     output = generate_text(prompt, engine=engine, stop="###")
@@ -83,18 +99,16 @@ def generate_article():
         request_data = request.get_json()
         if 'opinion' not in request_data:
             return jsonify({'error': 'Invalid request. opinion is missing.'}), 400
+
         if 'headline' not in request_data:
             return jsonify({'error': 'Invalid request. headline is missing.'}), 400
 
-        prompt = request_data['opinion']
+        opinion = request_data['opinion']
         headline = request_data['headline']
         
-        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
-        ending_text = " ->"
-        opinion = beginning_text + prompt + ending_text
-        
-        print(f"Selected output:")
-        new_prompt = f"{opinion} {headline} ###Add Article:"
+        # New step to process the opinion with Prompt A or B
+        processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
+        new_prompt = f"The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: {processed_opinion} -> {headline} ###Add Article:"
     
         # Generate the article
         new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
@@ -114,14 +128,13 @@ def generate_article():
             else:
                 print(f"\nThe final article output has been flagged by the moderation model twice. Please try again or use a different prompt.")
 
-                         
         if not new_result:
             return jsonify({'status': True,'article': new_result, 'prompt':new_prompt}), 400
         else:
             return jsonify({'status': True,'article': new_result, 'prompt':new_prompt}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 @app.route('/generate_headline', methods=['POST'])
 def generate_headline():
     try:
@@ -129,11 +142,12 @@ def generate_headline():
         if 'opinion' not in request_data:
             return jsonify({'error': 'Invalid request. opinion is missing.'}), 400
 
-        initial_prompt = request_data['opinion']
+        opinion = request_data['opinion']
         
-        beginning_text = ""
-        ending_text = " ->"
-        prompt = beginning_text + initial_prompt + ending_text
+        # New step to process the opinion with Prompt A or B
+        processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
+        prompt = f"{processed_opinion} ->"
+
         final_outputs = []
 
         for _ in range(7):
@@ -143,6 +157,7 @@ def generate_headline():
                 if not flagged:
                     if not contains_blocked_words(result, blocked_words):
                         final_outputs.append(result)              
+        
         if not final_outputs:
             return jsonify({'status': True, 'headlines': final_outputs, 'prompt':prompt}), 400
         else:
@@ -155,3 +170,4 @@ application = app
 
 if __name__ == '__main__':
     app.run(host='localhost', port=105)
+
