@@ -34,7 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.75) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-11-13-05-29-50", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.75) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -63,7 +63,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     processed_opinion = response.choices[0].text.strip()
     return processed_opinion
     
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-11-13-05-29-50") -> str:
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
@@ -151,7 +151,7 @@ def generate_headline():
         final_outputs = []
 
         for _ in range(7):
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-11-13-05-29-50")
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
@@ -170,4 +170,3 @@ application = app
 
 if __name__ == '__main__':
     app.run(host='localhost', port=105)
-
