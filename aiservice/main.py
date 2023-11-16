@@ -64,12 +64,12 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     return processed_opinion
     
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-11-13-05-29-50") -> str:
-    output = generate_text(prompt, engine=engine, stop="###")
+    output = generate_text(prompt, engine=engine, stop="!END")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, stop="###")
+        output = generate_text(prompt, engine=engine, stop="!END")
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         if not plagiarism_results:
             return output
