@@ -34,7 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-11-13-16-10-01", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -53,7 +53,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     elif mod_value == 1:
         prompt = "Take the opinion and exaggerate it to it's logical extreme with a specific example. Output one short sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 2:
-        prompt = "Give a very specific relatable example related to the opinion. Output one short sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Give a very specific relatable example related directly to the opinion. Output one short sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 3:
         prompt = "Take the opinion to it's comedic extreme. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 4:
@@ -74,7 +74,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     processed_opinion = response.choices[0].text.strip()
     return processed_opinion
     
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-11-13-16-10-01") -> str:
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
@@ -164,7 +164,7 @@ def generate_headline():
         for i in range(7):
             processed_opinion = process_opinion(opinion, i)
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-11-13-16-10-01")
             # rest of the code
 
             if result:
