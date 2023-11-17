@@ -161,8 +161,12 @@ def generate_headline():
 
         final_outputs = []
 
-        for _ in range(7):
+        for i in range(7):
+            processed_opinion = process_opinion(opinion, i)
+            prompt = f"{processed_opinion} ->"
             result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            # rest of the code
+
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
