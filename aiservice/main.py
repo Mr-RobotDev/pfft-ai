@@ -1,4 +1,4 @@
-# pip install ipywidgets 
+# pip install ipywidgets
 # pip install openai
 from flask import Flask, request, jsonify
 import openai
