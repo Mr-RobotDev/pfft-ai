@@ -34,7 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.6) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -57,7 +57,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     elif mod_value == 3:
         prompt = "Take the opposite of the input opinion and justify it hyperbolically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 4:
-        prompt = "Give a silly justification of the opinion, without saying opinion, but using specifics. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Repeat the opinion and make no changes. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 5:
         prompt = "Take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 6:
