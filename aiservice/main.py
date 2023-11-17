@@ -34,7 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-11-13-05-29-50", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.6) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -47,15 +47,26 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-11-13-05-29-50", ma
     return response.choices[0].text.strip()
 
 def process_opinion(opinion: str, processing_count: int) -> str:
-    if processing_count % 2 == 0:
-        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. End with ###\n\nINPUT: " + opinion
-    else:
-        prompt = "INSTRUCTIONS: take the input opinion and justify it hyperbolically with a specific detail or two in one short sentence with no punctuation, then say nothing else. End with ###\n\nINPUT: " + opinion
+    mod_value = processing_count % 7
+    if mod_value == 0:
+        prompt = "Take the opposite of the opinion and justify it. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 1:
+        prompt = "Take the opposite of the opinion and justify it. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 2:
+        prompt = "Give a relatable example related to the opinion. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 3:
+        prompt = "Take the opinion to it's absurd extreme. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 4:
+        prompt = "Give an opinion of the opinion, without saying opinion. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 5:
+        prompt = "Take the opposite of the opinion and justify it. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 6:
+        prompt = "Make the opinion irrational. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
 
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
-        temperature=0.75,
+        temperature=0.7,
         max_tokens=60,
         stop=["###"]
     )
@@ -63,13 +74,13 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     processed_opinion = response.choices[0].text.strip()
     return processed_opinion
     
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-11-13-05-29-50") -> str:
-    output = generate_text(prompt, engine=engine, stop="!END")
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+    output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, stop="!END")
+        output = generate_text(prompt, engine=engine, stop="###")
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         if not plagiarism_results:
             return output
