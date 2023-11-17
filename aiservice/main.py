@@ -162,7 +162,7 @@ def generate_headline():
         final_outputs = []
 
         for _ in range(7):
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-11-13-05-29-50")
+            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
