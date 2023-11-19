@@ -34,7 +34,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.8) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 74, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt=prompt + " ->",
@@ -46,8 +46,35 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
     )
     return response.choices[0].text.strip()
 
+def process_opinion(opinion: str, processing_count: int) -> str:
+    mod_value = processing_count % 7
+    if mod_value == 0:
+        prompt = "Take the input opinion and justify it hyperbolically with a specific detail, then say nothing else. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 1:
+        prompt = "Take a contrary to the opinion and exaggerate it to it's logical extreme with a specific example. Output one short sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 2:
+        prompt = "Give a very specific relatable example related directly to the opinion. Output one short sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 3:
+        prompt = "Repeat the opinion and make no changes. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 4:
+        prompt = "Repeat the opinion and make no changes. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 5:
+        prompt = "Take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+    elif mod_value == 6:
+        prompt = "Give a specific, detailed, funny example of what would happen if the opinion is not held to. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        temperature=0.7,
+        max_tokens=60,
+        stop=["###"]
+    )
+
+    processed_opinion = response.choices[0].text.strip()
+    return processed_opinion
     
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-11-09-14-41-48") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
     output = generate_text(prompt, engine=engine, stop="###")
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     if not plagiarism_results:
@@ -83,18 +110,16 @@ def generate_article():
         request_data = request.get_json()
         if 'opinion' not in request_data:
             return jsonify({'error': 'Invalid request. opinion is missing.'}), 400
+
         if 'headline' not in request_data:
             return jsonify({'error': 'Invalid request. headline is missing.'}), 400
 
-        prompt = request_data['opinion']
+        opinion = request_data['opinion']
         headline = request_data['headline']
         
-        beginning_text = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: "
-        ending_text = " ->"
-        opinion = beginning_text + prompt + ending_text
-        
-        print(f"Selected output:")
-        new_prompt = f"{opinion} {headline} ###Add Article:"
+        # New step to process the opinion with Prompt A or B
+        processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
+        new_prompt = f"The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: {processed_opinion} -> {headline} ###Add Article:"
     
         # Generate the article
         new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###"])
@@ -114,14 +139,13 @@ def generate_article():
             else:
                 print(f"\nThe final article output has been flagged by the moderation model twice. Please try again or use a different prompt.")
 
-                         
         if not new_result:
             return jsonify({'status': True,'article': new_result, 'prompt':new_prompt}), 400
         else:
             return jsonify({'status': True,'article': new_result, 'prompt':new_prompt}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 @app.route('/generate_headline', methods=['POST'])
 def generate_headline():
     try:
@@ -129,20 +153,27 @@ def generate_headline():
         if 'opinion' not in request_data:
             return jsonify({'error': 'Invalid request. opinion is missing.'}), 400
 
-        initial_prompt = request_data['opinion']
+        opinion = request_data['opinion']
         
-        beginning_text = ""
-        ending_text = " ->"
-        prompt = beginning_text + initial_prompt + ending_text
+        # New step to process the opinion with Prompt A or B
+        processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
+        prompt = f"{processed_opinion} ->"
+
         final_outputs = []
 
-        for _ in range(7):
+        for i in range(7):
+            processed_opinion = process_opinion(opinion, i)
+            processed_opinion = processed_opinion.lower()  # Convert to lowercase
+            prompt = f"{processed_opinion} ->"
             result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            # rest of the code
+
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
                     if not contains_blocked_words(result, blocked_words):
                         final_outputs.append(result)              
+        
         if not final_outputs:
             return jsonify({'status': True, 'headlines': final_outputs, 'prompt':prompt}), 400
         else:
