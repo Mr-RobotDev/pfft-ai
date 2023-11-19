@@ -233,8 +233,8 @@ const ArticleGenerated: FC = () => {
           <div
             className="col-span-3 
           lg:text-left lg:px-1
-          xl:px-10
-          slg:px-10 slg:pb-5 slg:text-left
+          xl:px-[10rem]
+          slg:px-[10rem] slg:pb-5 slg:text-left
           md:px-10 md:pb-7 md:pt-3 md:text-left
           xms:px-5 xms:pb-5 xms:text-center
           xs:px-5 xs:pb-5 xs:text-center

@@ -16,6 +16,10 @@ import mongoose from 'mongoose';
     type: String,
     required: true,
   },
+  opinion: {
+    type: String,
+    required: false,
+  },
 });
 
 export default historySchema;

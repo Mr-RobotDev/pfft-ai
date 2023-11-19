@@ -69,6 +69,7 @@ form {
 }
 
 .ticker-module_tickerText__ryjAR {
+  cursor: pointer !important;
   color: #ffffff !important;
   font-size: 30px !important;
   font-weight: 400 !important;
@@ -80,7 +81,7 @@ form {
 }
 
 .article-header {
-  font-size: 3.5rem;
+  font-size: 2.5rem;
 }
 
 .article-container {
@@ -143,5 +144,22 @@ form {
   .ticker-module_tickerText__ryjAR {
     font-size: 28px !important;
     line-height: 30px !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .article-header{
+    font-size: 1.5rem;
+    text-align: start;
+  }
+  .article-container{
+    text-align: start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .article-container{
+    font-size: 1.5rem;
+    line-height: 3rem;
   }
 }

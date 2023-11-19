@@ -21,11 +21,11 @@ const Blog: FC = () => {
   const [blog, setBlog] = useState<BlogData>({ headline: "", username: "" });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const hash = (router.query.blogID || '') as string;
-  console.log(router.query);
   const getOrignalURL = async () => {
     if(!hash) return;
     const url = await getDestination(hash);
     setBlogId(url.split("blogID=")[1]);
+    
   };
   useEffect(() => {
     getOrignalURL();
@@ -57,14 +57,14 @@ const Blog: FC = () => {
 
   return (
     <Main meta={<Meta title="Blog" description="Blog" />}>
-      <div className="xms:mx-16 mx-12 slg:mx-12 lg:mx-[6rem] ">
+      <div className="xms:mx-16 mx-12 slg:mx-12 lg:mx-[35rem] ">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <PulseLoader color="orange" size={20} />
           </div>
         ) : (
           <>
-            <h1 className="article-header font-bold break-all font-copperplate mb-6 text-black-100">
+            <h1 className="article-header font-bold font-copperplate mb-6 text-black-100">
               {blog.headline}
             </h1>
             <div className="flex grid-cols-2">

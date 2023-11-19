@@ -4,6 +4,7 @@ export interface IHistory extends Document  {
   article: string;
   author:string;
   userId: Schema.Types.ObjectId;
+  opinion?: string;
 }
 
 export type HistoryDocument = IHistory & Document;

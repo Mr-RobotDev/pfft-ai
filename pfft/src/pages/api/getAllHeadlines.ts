@@ -10,24 +10,82 @@ async function getAllHeadlines(req: NextApiRequest, res: NextApiResponse) {
     await dbConnect();
     const matchedHeadlines = await HistoryModel.aggregate([
       {
-        $sort:{
-          _id: -1
-        }
-      }
-      ,{
-        $group: {
-          _id: "$headline",
-          latestId: { $first: "$_id" },
+        $lookup: {
+          from: "shorturls",
+          let: {
+            blog: {
+              $concat: [
+                "^",
+                ".*",
+                "blogID=",
+                {
+                  $toString: "$_id",
+                },
+              ],
+            },
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $regexMatch: {
+                    input: "$link",
+                    regex: "$$blog",
+                    options: "i",
+                  },
+                },
+              },
+            },
+          ],
+          as: "shorts",
         },
       },
       {
-        $sort:{
-          latestId: -1
-        }
+        $project:
+          /**
+           * specifications: The fields to
+           *   include or exclude.
+           */
+          {
+            _id: "$_id",
+            headline: "$headline",
+            short: {
+              $arrayElemAt: ["$shorts", 0],
+            },
+          },
       },
       {
-        $limit: 50
-      }
+        $sort: {
+          _id: -1,
+        },
+      },
+      {
+        $group: {
+          _id: "$headline",
+          blog: {
+            $first: "$short.uid",
+          },
+        },
+      },
+      {
+        $sort: {
+          latestId: -1,
+        },
+      },
+      {
+        $limit: 50,
+      },
+      {
+        $project:
+          /**
+           * specifications: The fields to
+           *   include or exclude.
+           */
+          {
+            headline: "$_id",
+            blog: "$blog",
+          },
+      },
     ]);
 
     if (matchedHeadlines.length === 0) {
@@ -35,7 +93,7 @@ async function getAllHeadlines(req: NextApiRequest, res: NextApiResponse) {
         .status(404)
         .json({ status: true, error: "No headlines found" });
     }
-    return res.status(200).json({ status: true, headlines: matchedHeadlines.map((headline) => headline._id) });
+    return res.status(200).json({ status: true, headlines: matchedHeadlines.map((headline) => ({ headline: headline.headline, blog: headline.blog})) });
   } catch (error) {
     console.error(error);
     return res
