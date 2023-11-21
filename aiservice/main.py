@@ -49,24 +49,24 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
     if mod_value == 0:
-        prompt = "Take the opposite of the opinion and take it to it's logical extreme, justifying it with a specific example. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 1:
-        prompt = "Take the opinion and exaggerate it to it's logical extreme with a specific example. Output one short sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "INSTRUCTIONS: take the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one short sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 2:
-        prompt = "Give a very specific relatable example related to the opinion. Output one short sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one short sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 3:
-        prompt = "Take the opinion to it's comedic extreme. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "INSTRUCTIONS: take the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 4:
-        prompt = "Give a silly justification of the opinion, without saying opinion, but using specifics. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 5:
-        prompt = "Write a similar opinion to the opinion but use one specific detail. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Write a non-sequitor illustrating the opinion. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 6:
-        prompt = "Make the opinion irrational. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Make an absurd statement contradicting the opinion. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
 
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
-        temperature=0.9,
+        temperature=0.8,
         max_tokens=60,
         stop=["###"]
     )
