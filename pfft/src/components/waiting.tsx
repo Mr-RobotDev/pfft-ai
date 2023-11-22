@@ -18,15 +18,15 @@ const HeadlineWaiting: React.FC<Props> = () => {
         <div
           className="text-[black] whitespace-normal overflow-hidden font-normal text-center font-courierPrime leading-tight 
           animate__animated animate__backInDown
-        mb-[50px] text-[12px] 
-        xs:mb-[60px] xs:text-[15px] 
-        xms:mb-[70px] xms:text-[20px] 
-        md:mb-[90px] md:text-[30px] 
-        lg:mb-[95px] lg:text-[35px]
-        xl:mb-[120px] xl:text-[45px]
-        "
+          mb-[50px] text-[14px]   // Increased from 12px to 14px
+          xs:mb-[60px] xs:text-[17px]   // Increased from 15px to 17px
+          xms:mb-[70px] xms:text-[22px]   // Increased from 20px to 22px
+          md:mb-[90px] md:text-[32px]   // Increased from 30px to 32px
+          lg:mb-[95px] lg:text-[38px]   // Increased from 35px to 38px
+          xl:mb-[120px] xl:text-[48px]   // Increased from 45px to 48px
+          "
         >
-          Professional comedians may get 1 in 20 funny bits...
+          The Ai provides the comedy dirt...
         </div>
 
         <div className="animate__animated animate__tada">
@@ -56,7 +56,7 @@ const HeadlineWaiting: React.FC<Props> = () => {
         xl:mt-[122px] xl:text-[50px]
         "
         >
-          we average 1 in 10
+          and you find the gold.
         </div>
       </div>
     </div>
