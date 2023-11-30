@@ -57,11 +57,11 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     elif mod_value == 3:
         prompt = "INSTRUCTIONS: take the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 4:
-        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Repeat the opinion exactly, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 5:
-        prompt = "Write a non-sequitor illustrating the opinion. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific detail to the opinion. Output one sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 6:
-        prompt = "Make an absurd statement contradicting the opinion. Output one SHORT sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Repeat the opinion exactly, then add ###. OPINION: " + opinion + "\nOUTPUT:"
 
     response = openai.Completion.create(
         engine="text-davinci-003",
