@@ -49,9 +49,9 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
     if mod_value == 0:
-        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific detail to the opinion. Output one SHORT sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 1:
-        prompt = "INSTRUCTIONS: take the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one short sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific detail to the opinion. Output one short sentence, then add: ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 2:
         prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one short sentence, then add ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 3:
