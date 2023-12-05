@@ -20,7 +20,7 @@ const HeadlineWaiting: React.FC<Props> = () => {
             text-[black] whitespace-normal overflow-hidden font-normal text-center font-courierPrime leading-tight 
             animate__animated animate__backInDown
             mb-[50px] text-[14px] // Default for the smallest screens
-            xs:mb-[60px] xs:text-[20px] // Increased for mobile
+            xs:mb-[60px] xs:text-[22px] // Increased for mobile
             xms:mb-[70px] xms:text-[22px] // Adjust if needed for slightly larger screens
             md:mb-[90px] md:text-[28px]
             lg:mb-[95px] lg:text-[38px]
@@ -29,30 +29,30 @@ const HeadlineWaiting: React.FC<Props> = () => {
         >
           Ai provides the comedy dirt...
         </div>
+          Ai provides the comedy dirt...
+        </div>
 
         <button
           className="
             rounded-full bg-gradient-to-r from-orange-100 to-orange-200 text-white font-copperplate leading-6
             w-[133px] text-[16px] py-2 px-5
-            xs:w-[153px] xs:text-[20px] xs:py-2 xs:px-5
+            xs:w-[160px] xs:text-[18px] xs:py-2 xs:px-5 // Increased width and slightly decreased text size for mobile
             slg:w-[183px] slg:text-[23px] slg:py-3 slg:px-8
-            md:w-[200px] md:text-[26px] md:py-3 md:px-8  // Updated for medium devices
-            lg:w-[220px] lg:text-[30px] lg:py-4 lg:px-10 // Updated for large devices
-            xl:w-[240px] xl:text-[34px] xl:py-4 xl:px-12 // Updated for extra-large devices
+            md:w-[200px] md:text-[26px] md:py-3 md:px-8
+            lg:w-[220px] lg:text-[30px] lg:py-4 lg:px-10
+            xl:w-[240px] xl:text-[34px] xl:py-4 xl:px-12
           "
         >
-          pffting
-          <span className="pl-1">
-            <PulseLoader color="#ffffff" size={3} />
-          </span>
+          pffting&nbsp;<span className="pl-1"><PulseLoader color="#ffffff" size={3} /></span>
         </button>
 
 
+
         <div
-          className=" text-[black] whitespace-normal overflow-hidden font-400 text-center font-courierPrime 
+          className=" text-[black] whitespace-normal overflow-hidden font-400 text-center font-courierPrime
             animate__animated animate__backInUp
-            mt-[40px] text-[20px] leading-tight // Default for the smallest screens, adjust leading if needed
-            xs:mt-[45px] xs:text-[30px] xs:leading-[40px] // Increased size and decreased line spacing for mobile
+            mt-[40px] text-[20px] leading-tight // Default for the smallest screens
+            xs:mt-[45px] xs:text-[32px] xs:leading-[50px] // Increased size and slightly increased line spacing for mobile
             xms:mt-[50px] xms:text-[26px]
             md:mt-[100px] md:text-[50px] md:leading-[73px]
             lg:mt-[108px] lg:text-[50px]
