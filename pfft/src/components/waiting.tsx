@@ -10,14 +10,14 @@ const HeadlineWaiting: React.FC<Props> = () => {
       <div
         className="
       flex flex-col items-center
-      w-[250px] 
-      xs:w-[300px] 
+      w-[250px]
+      xs:w-[300px]
       md:w-[550px]
       slg:w-[702]"
       >
         <div
           className="
-            text-[black] whitespace-normal overflow-hidden font-normal text-center font-courierPrime leading-tight 
+            text-[black] whitespace-normal overflow-hidden font-normal text-center font-courierPrime leading-tight
             animate__animated animate__backInDown
             mb-[50px] text-[14px] // Default for the smallest screens
             xs:mb-[60px] xs:text-[22px] // Increased for mobile
@@ -61,7 +61,6 @@ const HeadlineWaiting: React.FC<Props> = () => {
         >
           humans find the gold.
         </div>
-      </div>
     </div>
   );
 };

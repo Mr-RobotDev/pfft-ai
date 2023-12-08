@@ -127,7 +127,7 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
             <ToastContainer />
             {headlines1.map((headline, index) => {
               const fontSize = index === 0 ? 36 : 22;
-              const mobileFontSize = index === 0 ? '24px' : '16px'; // smaller sizes for mobile
+              //const mobileFontSize = index === 0 ? 24 : 16; // smaller sizes for mobile
               const fontWeight = index === 0 ? 600 : 400;
               return (
                 <div
@@ -138,10 +138,7 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
                     fontSize: `${fontSize}px`,
                     fontWeight: `${fontWeight}`,
                     animationDuration: "1s",
-                    animationDelay: "1s", // Adjust the delay as needed
-                    '@media (max-width: 768px)': {
-                      fontSize: mobileFontSize,
-                  },
+                    animationDelay: "1s" // Adjust the delay as needed
                   }}
                   key={index + headline}
                 >
@@ -155,10 +152,10 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
           </div>
 
           <div
-            className="order-first flex flex-col items-center justify-center p-4 col-span-2  
-          text-[20px] 
+            className="order-first flex flex-col items-center justify-center p-4 col-span-2
+          text-[20px]
           xms:text-[22px]
-          lg:text-[22px] 
+          lg:text-[22px]
           lg:order-2"
           >
             <div
@@ -181,7 +178,7 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
           <div className="text-[black] lg:text-right lg:order-3 col-span-2 mx-3 lg:px-0 lg:ml-0 ml-2 px-8  ">
             {headlines2.map((headline, index) => {
               const fontSize = index === 0 ? 36 : 22;
-              const mobileFontSize = index === 0 ? '20px' : '12px'; // smaller sizes for mobile
+              //const mobileFontSize = index === 0 ? '20px' : '12px'; // smaller sizes for mobile
               const fontWeight = index === 0 ? 600 : 400;
               return (
                 <div
@@ -192,10 +189,7 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
                     animationDuration: "1s",
                     animationDelay: "1s",
                     fontSize: `${fontSize}px`,
-                    fontWeight: `${fontWeight}`,
-                    '@media (max-width: 768px)': {
-                      fontSize: mobileFontSize,
-                  },
+                    fontWeight: `${fontWeight}`
                   }}
                   key={index + headline}
                 >
