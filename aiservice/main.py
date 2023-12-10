@@ -174,7 +174,7 @@ def generate_headline():
             processed_opinion = process_opinion(opinion, i)
             processed_opinion = processed_opinion.lower()  # Convert to lowercase
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-05-13-21-23-30")
+            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59")
             # rest of the code
 
             if result:
