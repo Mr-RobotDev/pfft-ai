@@ -78,14 +78,14 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     return trim_text(response.choices[0].text.strip())
     
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
-    output = generate_text(prompt, engine=engine, max_tokens=75, stop="##","!")
+    output = generate_text(prompt, engine=engine, max_tokens=75, stop=["##","!"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, max_tokens=75, stop="##","!")
+        output = generate_text(prompt, engine=engine, max_tokens=75, stop=["##","!"])
         output = trim_text(output)  # Trim the output text again
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         
