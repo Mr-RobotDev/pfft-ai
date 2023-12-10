@@ -7,6 +7,9 @@ from typing import List, Tuple, Optional
 from dotenv import load_dotenv
 import os
 
+def trim_text(text: str) -> str:
+    return ' '.join(text.split())
+
 load_dotenv('.env')
 
 app = Flask(__name__)
@@ -44,7 +47,7 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-05-13-21-23-30", ma
         stop=stop,
         timeout=30,
     )
-    return response.choices[0].text.strip()
+    return trim_text(response.choices[0].text.strip())
 
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
@@ -72,19 +75,25 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     )
 
     processed_opinion = response.choices[0].text.strip()
-    return processed_opinion
+    return trim_text(response.choices[0].text.strip())
     
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-05-13-21-23-30") -> str:
     output = generate_text(prompt, engine=engine, stop="##")
+    output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
+    
     if not plagiarism_results:
         return output
     else:
         output = generate_text(prompt, engine=engine, stop="##")
+        output = trim_text(output)  # Trim the output text again
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
+        
         if not plagiarism_results:
             return output
+    
     return None
+
 
 def moderate_content(text: str) -> Tuple[bool, dict]:
     moderation_response = openai.Moderation.create(input=text)
@@ -119,10 +128,10 @@ def generate_article():
         
         # New step to process the opinion with Prompt A or B
         processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
-        new_prompt = f"The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It hides an idea or opinion in a satirical news headline by passing this idea or opinion through one or more humor filters such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, and/or misplaced focus and outputs a hilarious satirical headline. Begin: {processed_opinion} -> {headline} ###Add Article:"
+        new_prompt = f" {processed_opinion} -> {headline} ###Add Article:"
     
         # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###","##"])
+        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##"])
 
         flagged, moderation_output = moderate_content(new_result)
     
@@ -131,7 +140,7 @@ def generate_article():
             print("jh" , new_result)
         else:
             # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-05-22-06-41-36", max_tokens=400, stop=["!Article Complete","!E","###","##"])
+            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##"])
             flagged, moderation_output = moderate_content(new_result)
             if not flagged:
                 print(f"\nArticle Generated")
@@ -165,7 +174,7 @@ def generate_headline():
             processed_opinion = process_opinion(opinion, i)
             processed_opinion = processed_opinion.lower()  # Convert to lowercase
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-05-13-21-23-30")
             # rest of the code
 
             if result:
