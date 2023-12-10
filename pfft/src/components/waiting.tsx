@@ -27,7 +27,7 @@ const HeadlineWaiting: React.FC<Props> = () => {
             xl:mb-[120px] xl:text-[48px]
             "
         >
-          Ai provides the comedy dirt...
+          The 🤖 digs the comedy dirt,
         </div>
 
         <button
@@ -43,7 +43,7 @@ const HeadlineWaiting: React.FC<Props> = () => {
         >
           pffting
           <span className="pl-1">
-            <PulseLoader color="#ffffff" size={3} />
+            <PulseLoader color="#ffffff" size={2} />
           </span>
         </button>
 
@@ -59,7 +59,7 @@ const HeadlineWaiting: React.FC<Props> = () => {
             xl:mt-[122px] xl:text-[50px]
             "
         >
-          humans find the gold.
+          ...and humans find the gold. 
         </div>
       </div>
     </div>
