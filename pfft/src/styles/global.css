@@ -11,6 +11,9 @@ a {
       rgba(255, 145, 77, 1)
     );
   }
+  .bg-footer {
+    background-color: rgba(255, 193, 163, 1);
+  }
 }
 @font-face {
   font-family: "Courier Prime";

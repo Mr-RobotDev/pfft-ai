@@ -30,7 +30,7 @@ export function Main(props: IMainProps) {
         <Tracking />
       </div>
       {shouldShowFooter && (
-        <footer className="fixed z-10 w-full bottom-0 h-77 bg-gradient-red-1-to-red-2">
+        <footer className="fixed z-10 w-full bottom-0">
           <BottomBar />
         </footer>
       )}
