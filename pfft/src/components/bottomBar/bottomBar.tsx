@@ -1,7 +1,34 @@
 'use client'
 import HeadlineCarousel from "@/components/cerousel";
+import React, { useEffect, useState } from 'react';
 
 const BottomBar: React.FC = () => {
+  const [shouldShow, setShouldShow] = useState(false);
+  console.log("BUILD");
+  useEffect(() => {
+    const handleScroll = () => {
+        const scrollPosition = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.body.scrollHeight;
+
+        // Check if the user has scrolled to the bottom of the page
+        console.log("SET : " + (scrollPosition + windowHeight >= documentHeight));
+        setShouldShow(scrollPosition + windowHeight >= documentHeight);
+    };
+
+    // Attach the scroll event listener
+    window.addEventListener('scroll', handleScroll);
+
+    // Initial check in case the page is loaded at the bottom
+    handleScroll();
+
+    // Cleanup the event listener on component unmount
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+
   return (
     <div>
         <div className="flex items-center h-77 bg-gradient-red-1-to-red-2">
@@ -39,11 +66,13 @@ const BottomBar: React.FC = () => {
           <HeadlineCarousel />
 
         </div>
-
-        <div className="float-right w-[100%] items-end items-center px-2 text-sm bg-footer space-x-2">
-            <a href="https://pfft.ai/privacy-policy" className="text-[#757575] float-right mx-2">Privacy Policy</a>
-            <a href="https://pfft.ai/term-condition" className="text-[#757575] float-right mx-2">Term & Condition</a>
-        </div>
+        {
+            shouldShow &&
+            <div className="float-right w-[100%] items-end items-center px-2 text-sm bg-footer space-x-2">
+                <a href="https://pfft.ai/privacy-policy" className="text-[#757575] float-right mx-2">Privacy Policy</a>
+                <a href="https://pfft.ai/term-condition" className="text-[#757575] float-right mx-2">Term & Condition</a>
+            </div>
+        }
     </div>
   );
 };
