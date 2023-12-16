@@ -31,10 +31,11 @@ export default NextAuth({
               user_id: new mongoose.Types.ObjectId(value._id),
               isFreeCredit: true,
               credit: process.env.FREE_CREDIT_AMOUNT,
+              email: value.email
             });
-      
+
             await paymentRecord.save();
-            
+
           });
         } catch (error) {
           console.error("Failed to save user data to MongoDB", error);
@@ -81,7 +82,7 @@ export default NextAuth({
     async jwt({ token, user }: any) {
       if (user) {
         if(googleSessionId===null){
-          
+
           token.user = {
             _id: user.id,
             email: user.email,
@@ -95,7 +96,7 @@ export default NextAuth({
             name: user.username,
           };
         }
-        
+
       }
       return token;
     },

@@ -22,6 +22,7 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
         user_id: new mongoose.Types.ObjectId(newUser._id),
         isFreeCredit: true,
         credit: process.env.FREE_CREDIT_AMOUNT,
+        email: newUser.email
       });
 
       await paymentRecord.save();
