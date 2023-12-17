@@ -21,6 +21,12 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
 }) => {
   const [headlines1, setHeadlines1] = useState<string[]>([]);
   const [headlines2, setHeadlines2] = useState<string[]>([]);
+  const isMobile = () => {
+  if (typeof window !== "undefined") {
+    return window.innerWidth <= 640;
+  }
+  return false; // Default to false if window is not defined
+  };
   const router = useRouter();
   const session = useSession().data;
   useEffect(() => {
@@ -135,7 +141,7 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
                     handleOnClick(headline);
                   }}
                   style={{
-                    fontSize: `${fontSize}px`,
+                    fontSize: `${isMobile() ? (index === 0 ? 24 : 16) : (index === 0 ? 36 : 22)}px`,
                     fontWeight: `${fontWeight}`,
                     animationDuration: "1s",
                     animationDelay: "1s" // Adjust the delay as needed
