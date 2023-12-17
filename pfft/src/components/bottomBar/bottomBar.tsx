@@ -1,30 +1,33 @@
 'use client'
+import { useRouter } from "next/router";
 import HeadlineCarousel from "@/components/cerousel";
 import React, { useEffect, useState } from 'react';
 
 const BottomBar: React.FC = () => {
   const [shouldShow, setShouldShow] = useState(false);
-  console.log("BUILD");
+  const router = useRouter();
   useEffect(() => {
+    const isHomePage = router.pathname === '/';
     const handleScroll = () => {
         const scrollPosition = window.scrollY;
         const windowHeight = window.innerHeight;
         const documentHeight = document.body.scrollHeight;
-
         // Check if the user has scrolled to the bottom of the page
-        console.log("SET : " + (scrollPosition + windowHeight >= documentHeight));
         setShouldShow(scrollPosition + windowHeight >= documentHeight);
     };
+    //Show Privacy-Terms Link only for the Home Page
+    if(isHomePage) {
+        // Attach the scroll event listener
+        window.addEventListener('scroll', handleScroll);
 
-    // Attach the scroll event listener
-    window.addEventListener('scroll', handleScroll);
-
-    // Initial check in case the page is loaded at the bottom
-    handleScroll();
+        // Initial check in case the page is loaded at the bottom
+        handleScroll();
+    }
 
     // Cleanup the event listener on component unmount
     return () => {
-        window.removeEventListener('scroll', handleScroll);
+        if(isHomePage)
+            window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -70,7 +73,7 @@ const BottomBar: React.FC = () => {
             shouldShow &&
             <div className="float-right w-[100%] items-end items-center px-2 text-sm bg-footer space-x-2">
                 <a href="https://pfft.ai/privacy-policy" className="text-[#757575] float-right mx-2">Privacy Policy</a>
-                <a href="https://pfft.ai/term-condition" className="text-[#757575] float-right mx-2">Term & Condition</a>
+                <a href="https://pfft.ai/term-condition" className="text-[#757575] float-right mx-2">Terms and Conditions</a>
             </div>
         }
     </div>
