@@ -132,7 +132,6 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
           <div className="text-[black] lg:order-1 ml-2 col-span-2 lg:px-0 px-8">
             <ToastContainer />
             {headlines1.map((headline, index) => {
-              const fontSize = index === 0 ? 36 : 22;
               //const mobileFontSize = index === 0 ? 24 : 16; // smaller sizes for mobile
               const fontWeight = index === 0 ? 600 : 400;
               return (
