@@ -150,13 +150,6 @@ form {
   }
 }
 
-@media (max-width: 640px) {
-  .mobile-headline {
-    font-size: 1.25rem; /* Adjust the size as needed */
-    /* Add any other styling as needed */
-  }
-}
-
 @media (max-width: 1023px) {
   .article-header{
     font-size: 1.5rem;
