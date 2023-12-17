@@ -182,19 +182,16 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
 
           <div className="text-[black] lg:text-right lg:order-3 col-span-2 mx-3 lg:px-0 lg:ml-0 ml-2 px-8  ">
             {headlines2.map((headline, index) => {
-              const fontSize = index === 0 ? 36 : 22;
-              //const mobileFontSize = index === 0 ? '20px' : '12px'; // smaller sizes for mobile
-              const fontWeight = index === 0 ? 600 : 400;
               return (
                 <div
                   onClick={() => {
                     handleOnClick(headline);
                   }}
                   style={{
+                    fontSize: `${isMobile() ? (index === 0 ? 24 : 16) : (index === 0 ? 36 : 22)}px`,
+                    fontWeight: `${index === 0 ? 600 : 400}`,
                     animationDuration: "1s",
-                    animationDelay: "1s",
-                    fontSize: `${fontSize}px`,
-                    fontWeight: `${fontWeight}`
+                    animationDelay: "1s"
                   }}
                   key={index + headline}
                 >
@@ -205,6 +202,7 @@ const FetchHeadlines: FC<HeadlinesProps> = ({
                 </div>
               );
             })}
+
           </div>
         </div>
       )}
