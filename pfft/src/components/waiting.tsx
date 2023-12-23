@@ -27,7 +27,7 @@ const HeadlineWaiting: React.FC<Props> = () => {
             xl:mb-[120px] xl:text-[48px]
             "
         >
-          The 🤖 digs the comedy dirt,
+          Professional comedians may get 1 in 20 funny ideas...
         </div>
 
         <button
@@ -59,7 +59,7 @@ const HeadlineWaiting: React.FC<Props> = () => {
             xl:mt-[122px] xl:text-[50px]
             "
         >
-          ...and humans find the gold. 
+          we average 1 in 10. 
         </div>
       </div>
     </div>
