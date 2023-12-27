@@ -24,14 +24,9 @@ services:
     depends_on:
       - aiservice
       - pfft
-      - certbot
     networks:
       - backend
-  certbot:
-    image: certbot/certbot:latest
-
-
-
+      
 networks:
   backend:
     driver: bridge
