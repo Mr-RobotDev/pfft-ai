@@ -6,6 +6,7 @@ import pandas as pd
 from typing import List, Tuple, Optional
 from dotenv import load_dotenv
 import os
+import together
 
 def trim_text(text: str) -> str:
     return ' '.join(text.split())
@@ -14,6 +15,7 @@ load_dotenv('.env')
 
 app = Flask(__name__)
 openai.api_key = os.environ.get("OPENAI_API_KEY")
+together.api_key = os.environ.get("TOGETHER_API_KEY")
 
 def jaccard_similarity(s1: set, s2: set) -> float:
     intersection = len(s1.intersection(s2))
@@ -66,16 +68,16 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     elif mod_value == 6:
         prompt = "Add extreme detail to the opinion and include no punctuation. Output one short sentence, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
 
-    response = openai.Completion.create(
-        engine="text-davinci-003",
+    response = together.Completion.create(
+        model="mistralai/Mistral-7B-v0.1",
         prompt=prompt,
         temperature=0.8,
         max_tokens=60,
         stop=["##"]
     )
 
-    processed_opinion = response.choices[0].text.strip()
-    return trim_text(response.choices[0].text.strip())
+    processed_opinion = trim_text(response.choices[0].text.strip())
+    return processed_opinion
     
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
     output = generate_text(prompt, engine=engine, max_tokens=75, stop=["##","!"])
