@@ -113,7 +113,7 @@ blocked_words = df_blocked_words["word"].tolist()
 
 @app.route("/")
 def home():
-    return "Hello PFFT"
+    return jsonify({'status': True}), 200
 
 @app.route('/generate_article', methods=['POST'])
 def generate_article():
