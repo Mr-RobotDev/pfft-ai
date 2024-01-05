@@ -3,6 +3,7 @@ FROM python:3.10-alpine3.17
 EXPOSE 8000
 RUN apk add build-base \ 
         linux-headers
+
 COPY . ./app
 RUN pip install uwsgi flask python-dotenv openai==0.27.8 together pandas
 
