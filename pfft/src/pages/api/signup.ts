@@ -6,6 +6,7 @@ import User from "@/models/user/user.model";
 import dbConnect from "../../database/conn";
 import PaymentRecord from "@/models/paymentRecord/paymentRecord.model";
 import mongoose from "mongoose";
+import {sendSignUpEmail} from "@utils/EmailHelper";
 
 async function createUser(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -26,6 +27,7 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
       });
 
       await paymentRecord.save();
+      sendSignUpEmail(newUser, process.env.FREE_CREDIT_AMOUNT, '1.49');
       return res.status(201).json({ message: "User Created!" });
     }
   } catch (error : any) {

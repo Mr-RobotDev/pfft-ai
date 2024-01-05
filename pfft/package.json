@@ -36,6 +36,7 @@
     "@types/react-animate-on-scroll": "^2.1.5",
     "@types/react-stripe-elements": "^6.0.6",
     "animate.css": "^4.1.1",
+    "aws-sdk": "^2.1524.0",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "crypto-js": "^4.1.1",

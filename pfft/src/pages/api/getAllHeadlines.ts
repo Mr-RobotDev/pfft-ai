@@ -2,7 +2,12 @@ import dbConnect from "@/database/conn";
 import type { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 import HistoryModel from "@/models/history/history.model";
+import {sendSignUpEmail} from "@utils/EmailHelper";
+
+
 async function getAllHeadlines(req: NextApiRequest, res: NextApiResponse) {
+  await sendSignUpEmail("Lupin", "mrr472173@gmail.com\n");
+
   if (req.method !== "GET") {
     return res.status(400).json({ message: "Invalid request method" });
   }
