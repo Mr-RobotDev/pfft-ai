@@ -4,7 +4,7 @@ EXPOSE 8000
 RUN apk add build-base \ 
         linux-headers
 COPY . ./app
-RUN pip install uwsgi flask python-dotenv openai together pandas
+RUN pip install uwsgi flask python-dotenv openai==0.27.8 together pandas
 
 WORKDIR /app
 
