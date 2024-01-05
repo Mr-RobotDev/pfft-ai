@@ -18,6 +18,7 @@ jobs:
       with:
         envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        envkey_TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}        
         directory: aiservice
         file_name: .env
     - name: Create Dotenv File for NextJS
