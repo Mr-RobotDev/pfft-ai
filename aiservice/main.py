@@ -54,25 +54,25 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
     if mod_value == 0:
-        prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: life is difficult.\nOUTPUT: life is so difficult that I feel like I'm constantly walking on a tightrope made of hot coals while juggling flaming swords trying not to accidentally trip and impale myself on one of the swords before falling into a pit of ferocious lions. ###/nAdd very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 1:
-        prompt = "Add very specific hyperbolic detail to foolishly deny the opinion. Output one short sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: life is difficult.\nOUTPUT: life is so difficult that I feel like I'm constantly walking on a tightrope made of hot coals while juggling flaming swords trying not to accidentally trip and impale myself on one of the swords before falling into a pit of ferocious lions. ###/nAdd very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 2:
-        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one short sentence, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: life is difficult.\nOUTPUT: life is so difficult that I feel like I'm constantly walking on a tightrope made of hot coals while juggling flaming swords trying not to accidentally trip and impale myself on one of the swords before falling into a pit of ferocious lions. ###/nAdd very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 3:
-        prompt = "INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add one space ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: life is difficult.\nOUTPUT: life is so difficult that I feel like I'm constantly walking on a tightrope made of hot coals while juggling flaming swords trying not to accidentally trip and impale myself on one of the swords before falling into a pit of ferocious lions. ###/nAdd very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 4:
-        prompt = "Take the opinion and make it rationally justified with a specific persuasive and funny example. Output one sentence, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: life is difficult.\nOUTPUT: life is so difficult that I feel like I'm constantly walking on a tightrope made of hot coals while juggling flaming swords trying not to accidentally trip and impale myself on one of the swords before falling into a pit of ferocious lions. ###/nAdd very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 5:
-        prompt = "Repeat the opinion with more detail. Output one sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: life is difficult.\nOUTPUT: life is so difficult that I feel like I'm constantly walking on a tightrope made of hot coals while juggling flaming swords trying not to accidentally trip and impale myself on one of the swords before falling into a pit of ferocious lions. ###/nAdd very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
     elif mod_value == 6:
-        prompt = "Add extreme detail to the opinion and include no punctuation. Output one short sentence, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
+        prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: life is difficult.\nOUTPUT: life is so difficult that I feel like I'm constantly walking on a tightrope made of hot coals while juggling flaming swords trying not to accidentally trip and impale myself on one of the swords before falling into a pit of ferocious lions. ###/nAdd very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
 
     response = together.Completion.create(
         model="mistralai/Mistral-7B-v0.1",
         prompt=prompt,
-        temperature=0.8,
-        max_tokens=60,
+        temperature=0.3,
+        max_tokens=100,
         stop=["##"]
     )
 
