@@ -73,12 +73,6 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         prompt=prompt,
         temperature=0.7,
         max_tokens=170,
-        type="chat",
-        repetitive_penalty=1,
-        request_type="language-model-inference",
-        top_p=0.7,
-        top_k=50,
-        repetition_penalty=1,
         stop=["##","[/INST]","</s>"]
     )
 
