@@ -73,7 +73,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         prompt=prompt,
         temperature=0.7,
         max_tokens=170,
-        stop=["##"]
+        stop=["##","[/INST]","</s>"]
     )
 
     processed_opinion = trim_text(response.choices[0].text.strip())
