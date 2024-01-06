@@ -204,8 +204,8 @@ def generate_headline():
         final_outputs = []
 
         for i in range(7):
-            processed_opinion = process_opinion(opinion, i)
-            processed_opinion = processed_opinion.lower()  # Convert to lowercase
+            processed_opinion, _ = process_opinion(opinion, i)  # Unpack the tuple to get the string
+            processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
             prompt = f"{processed_opinion} ->"
             result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
             # rest of the code
