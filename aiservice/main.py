@@ -116,7 +116,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
 
 
 def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM") -> str:
-    output = generate_text(prompt, engine=engine, max_tokens=75, stop=["#","!","<",">"])
+    output = generate_text(prompt, engine=engine, max_tokens=175, stop=["#","!","<",">"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     
