@@ -69,7 +69,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         prompt = "Add extreme detail to the opinion and include no punctuation. Output one short sentence, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
 
     response = together.Completion.create(
-        model="mistralai/Mistral-7B-Instruct-v0.1",
+        model="mistralai/Mixtral-8x7B-Instruct-v0.1",
         prompt=prompt,
         temperature=0.7,
         max_tokens=170,
