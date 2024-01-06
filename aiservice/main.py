@@ -89,25 +89,26 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     try:
         response = requests.post(url, json=payload, headers=headers)
         response.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code.
-
+    
         # Assuming the API returns a JSON response
         response_json = response.json()
-
+    
         # Correctly extract the text from the response JSON.
         processed_opinion = trim_text(response_json['choices'][0]['text'].strip())
-
+    
         # Return both the processed opinion and the entire response.
-        return processed_opinion, response_json
-
+        return processed_opinion, response_json  # Returns a tuple with the string and the response JSON
+    
     except requests.exceptions.HTTPError as http_err:
         # Handle HTTP errors (e.g., response code 4xx, 5xx)
         print(f"HTTP error occurred: {http_err}")
-        return None, {"error": str(http_err), "status_code": response.status_code}
-
+        return "", {"error": str(http_err), "status_code": response.status_code}  # Returns an empty string and the error information
+    
     except Exception as err:
         # Handle other possible errors (e.g., network issues)
         print(f"An error occurred: {err}")
-        return None, {"error": str(err)}
+        return "", {"error": str(err)}  # Returns an empty string and the error information
+
 
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
     output = generate_text(prompt, engine=engine, max_tokens=175, stop=["##","!"])
