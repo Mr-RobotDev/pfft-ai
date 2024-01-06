@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 274, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 174, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt="The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + "->",
@@ -73,7 +73,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     payload = {
         "model": "mistralai/Mistral-7B-Instruct-v0.1",
         "prompt": prompt,
-        "max_tokens": 70,
+        "max_tokens": 150,
         "stop": ["##","[/INST]","</s>"],
         "temperature": 0.7,
         "top_p": 0.7,
@@ -116,14 +116,14 @@ def process_opinion(opinion: str, processing_count: int) -> str:
 
 
 def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM") -> str:
-    output = generate_text(prompt, engine=engine, max_tokens=175, stop=["#","!","<",">"])
+    output = generate_text(prompt, engine=engine, max_tokens=125, stop=["#","!","<",">"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, max_tokens=75, stop=["#","!","<",">"])
+        output = generate_text(prompt, engine=engine, max_tokens=125, stop=["#","!","<",">"])
         output = trim_text(output)  # Trim the output text again
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         
