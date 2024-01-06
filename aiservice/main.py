@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 125, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 125, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     response = openai.Completion.create(
         engine=engine,
         prompt="" + prompt + "->",
@@ -115,7 +115,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM") -> str:
     output = generate_text(prompt, engine=engine, max_tokens=100, stop=["##","!","<"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
@@ -212,7 +212,7 @@ def generate_headline():
             processed_opinion, _ = process_opinion(opinion, i)  # Unpack the tuple to get the string
             processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            result = check_and_retry(prompt, engine="ft:davinci-002:ai100::8ciHX6XM")
             # rest of the code
 
             if result:
