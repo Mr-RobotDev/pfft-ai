@@ -7,6 +7,7 @@ from typing import List, Tuple, Optional
 from dotenv import load_dotenv
 import os
 import together
+import requests
 
 def trim_text(text: str) -> str:
     return ' '.join(text.split())
@@ -68,17 +69,29 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     elif mod_value == 6:
         prompt = "[INST] Add extreme detail to the opinion and include no punctuation. Output one short sentence, then add one space and ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
 
-    response = together.Completion.create(
-        model="mistralai/Mixtral-8x7B-Instruct-v0.1",
-        prompt=prompt,
-        temperature=0.7,
-        max_tokens=170,
-        stop=["##","[/INST]","</s>"]
-    )
+    url = "https://api.together.xyz/inference"
+    payload = {
+        "model": "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        "prompt": prompt,
+        "max_tokens": 170,
+        "stop": ["##","[/INST]","</s>"],
+        "temperature": 0.7,
+        "top_p": 0.7,
+        "top_k": 50,
+        "repetition_penalty": 1
+    }
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "Authorization": f"Bearer {together.api_key}"
+    }
 
-    processed_opinion = trim_text(response.choices[0].text.strip())
-    return processed_opinion
+    response = requests.post(url, json=payload, headers=headers)
+    response_json = response.json()
     
+    # Correctly extract the text from the response JSON.
+    processed_opinion = trim_text(response_json['choices'][0]['text'].strip())
+
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
     output = generate_text(prompt, engine=engine, max_tokens=175, stop=["##","!"])
     output = trim_text(output)  # Trim the output text
