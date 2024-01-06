@@ -93,8 +93,13 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         # Assuming the API returns a JSON response
         response_json = response.json()
     
-        # Correctly extract the text from the response JSON.
-        processed_opinion = trim_text(response_json['choices'][0]['text'].strip())
+        # Checking if 'output' and 'choices' keys are present and structured as expected
+        if 'output' in response_json and 'choices' in response_json['output'] and len(response_json['output']['choices']) > 0:
+            processed_opinion = trim_text(response_json['output']['choices'][0]['text'].strip())
+        else:
+            print("Unexpected response format or 'choices' not in response.")
+            return "", {"error": "Unexpected response format or 'choices' not in response."}
+
     
         # Return both the processed opinion and the entire response.
         return processed_opinion, response_json  # Returns a tuple with the string and the response JSON
