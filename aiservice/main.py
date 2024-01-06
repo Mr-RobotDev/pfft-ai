@@ -69,7 +69,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         prompt = "Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: life is difficult\nOUTPUT: life is so difficult that I feel like I'm constantly walking on a tightrope made of hot coals ###\nAdd very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT:"
 
     response = together.Completion.create(
-        model="mistralai/Mistral-7B-v0.1",
+        model="mistralai/Mixtral-8x7B-Instruct-v0.1",
         prompt=prompt,
         temperature=0.7,
         max_tokens=270,
