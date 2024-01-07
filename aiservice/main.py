@@ -41,15 +41,18 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
     return False
 
 def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 274, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+    full_prompt = "The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + "->"
+    print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
         engine=engine,
-        prompt="The following is a professional satire writing tool created by the greatest satirical headline writer of all time. It translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + "->",
+        prompt=full_prompt,
         temperature=temperature,
         max_tokens=max_tokens,
         n=1,
         stop=stop,
         timeout=30,
     )
+    print(f"Received response from OpenAI: {response.choices[0].text.strip()}")
     return trim_text(response.choices[0].text.strip())
 
 def process_opinion(opinion: str, processing_count: int) -> str:
@@ -87,7 +90,9 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     }
 
     try:
+        print(f"Sending prompt to together.ai: {payload}")
         response = requests.post(url, json=payload, headers=headers)
+        print(f"Received response from together.ai: {response.json()}")  
         response.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code.
     
         # Assuming the API returns a JSON response
@@ -167,9 +172,11 @@ def generate_article():
         # New step to process the opinion with Prompt A or B
         processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
         new_prompt = f" {processed_opinion} -> {headline} ###Add Article:"
+        print(f"Generating with prompt: {new_prompt}")  # Print statement before sending the prompt
     
         # Generate the article
         new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##"])
+        print(f"Received article: {new_result}")  # Print statement after receiving the response
 
         flagged, moderation_output = moderate_content(new_result)
     
@@ -205,6 +212,7 @@ def generate_headline():
         # New step to process the opinion with Prompt A or B
         processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
         prompt = f"{processed_opinion} ->"
+        print(f"Generating with prompt: {prompt}")  # Print statement before sending the prompt
 
         final_outputs = []
 
@@ -213,7 +221,7 @@ def generate_headline():
             processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
             prompt = f"{processed_opinion} ->"
             result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
-            # rest of the code
+            print(f"Received headline: {result}")  # Print statement after receiving the response
 
             if result:
                 flagged, moderation_output = moderate_content(result)
