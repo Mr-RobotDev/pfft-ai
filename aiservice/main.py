@@ -211,7 +211,7 @@ def generate_headline():
         
         # New step to process the opinion with Prompt A or B
         processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
-        prompt = f"{processed_opinion} ->"
+        prompt = f"{processed_opinion} "
         print(f"Generating with prompt: {prompt}")  # Print statement before sending the prompt
 
         final_outputs = []
