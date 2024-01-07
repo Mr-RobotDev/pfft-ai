@@ -58,13 +58,13 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
     if mod_value == 0:
-        prompt = "<s>[INST] Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one SHORT sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 1:
-        prompt = "<s>[INST] Add very specific hyperbolic detail to foolishly deny the opinion. Output one short sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add very specific hyperbolic detail to foolishly deny the opinion. Output one sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 2:
-        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one short sentence, then add one space and ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one sentence with no punctuation, then add one space and ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 3:
-        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then say nothing else. Output one SHORT sentence, then add one space ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence with no punctuation, then add one space ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 4:
         prompt = "<s>[INST] Take the opinion and make it rationally justified with a specific persuasive and funny example. Output one sentence, then add one space and ###. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 5:
@@ -77,8 +77,8 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         "model": "mistralai/Mistral-7B-Instruct-v0.1",
         "prompt": prompt,
         "max_tokens": 110,
-        "stop": ["##","[/INST]","</s>","###"],
-        "temperature": 0.7,
+        "stop": ["##","[/INST]","</s>","###","#"],
+        "temperature": 0.9,
         "top_p": 0.7,
         "top_k": 50,
         "repetition_penalty": 1
@@ -121,14 +121,14 @@ def process_opinion(opinion: str, processing_count: int) -> str:
 
 
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
-    output = generate_text(prompt, engine=engine, max_tokens=100, stop=["##","!","<"])
+    output = generate_text(prompt, engine=engine, max_tokens=100, stop=["##","!","<","#"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, max_tokens=100, stop=["##","!","<"])
+        output = generate_text(prompt, engine=engine, max_tokens=100, stop=["##","!","<","#"])
         output = trim_text(output)  # Trim the output text again
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         
