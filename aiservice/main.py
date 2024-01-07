@@ -170,7 +170,7 @@ def generate_article():
         headline = request_data['headline']
         
         # New step to process the opinion with Prompt A or B
-        processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
+        processed_opinion, _ = process_opinion(opinion, 1)  # Unpacking the tuple to get just the text
         new_prompt = f" {processed_opinion} -> {headline} ###Add Article:"
         print(f"Generating with prompt: {new_prompt}")  # Print statement before sending the prompt
     
