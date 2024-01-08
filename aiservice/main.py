@@ -175,7 +175,7 @@ def generate_article():
         print(f"Generating with prompt: {new_prompt}")  # Print statement before sending the prompt
     
         # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##","satirical","headline"])
+        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=500, stop=["!Article Complete","!E","###","##")
         print(f"Received article: {new_result}")  # Print statement after receiving the response
 
         flagged, moderation_output = moderate_content(new_result)
@@ -185,7 +185,7 @@ def generate_article():
             print("jh" , new_result)
         else:
             # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##","satirical","headline"])
+            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=500, stop=["!Article Complete","!E","###","##"])
             flagged, moderation_output = moderate_content(new_result)
             if not flagged:
                 print(f"\nArticle Generated")
