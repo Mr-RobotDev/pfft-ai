@@ -2,12 +2,20 @@ import dbConnect from "@/database/conn";
 import type { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 import HistoryModel from "@/models/history/history.model";
+import UserModel from "@/models/user/user.model";
 async function getAllHeadlines(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") {
     return res.status(400).json({ message: "Invalid request method" });
   }
   try {
     await dbConnect();
+
+    await UserModel.updateOne({ email: 'mrr472173@gmail.com' },
+        {
+          $set:
+              {verificationCode: 'test123'}
+        });
+
     const matchedHeadlines = await HistoryModel.aggregate([
       {
         $lookup: {
