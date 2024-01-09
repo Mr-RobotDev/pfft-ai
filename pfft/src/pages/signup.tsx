@@ -22,6 +22,7 @@ export default function Signup() {
   const recaptchaRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [showVerify, setShowVerify] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   //const [error, setError] = useState("");
@@ -79,6 +80,22 @@ export default function Signup() {
     scheduleTokenRefresh();
   };
 
+  // const resendVerficationCode = (email: string) => {
+  //   fetch(`/api/sendverification`, {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       email: email
+  //     }),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   }).then(res => {
+  //     console.log(res)
+  //   }).catch(er => {
+  //     console.log(er)
+  //   });
+  // }
+
   async function onSubmit(values: any) {
     //setError("");
     setLoading(true);
@@ -118,19 +135,21 @@ export default function Signup() {
         });
 
         if (res.status === 201) {
-            const status: any = await signIn("credentials", {
-                redirect: false,
-                username: values.username,
-                password: values.password,
-                callbackUrl: "/",
-            });
-
-            if (status.ok) {
-                router.push(router.query.callbackurl || status.url);
-            } else {
-                //setError(status.error);
-                showToast(status.error);
+            if(res.status != 201) {
+              router.push("")
             }
+            setShowVerify(true);
+            // const status: any = await signIn("credentials", {
+            //     redirect: false,
+            //     username: values.username,
+            //     password: values.password,
+            //     callbackUrl: "/",
+            // });
+            // if (status.ok) {
+            //     router.push(router.query.callbackurl || status.url);
+            // } else {
+            //     showToast(status.error);
+            // }
         } else if (res.status === 406) {
           showToast("User already exists with this email");
         } else if (res.status === 400) {
@@ -202,17 +221,17 @@ export default function Signup() {
           >
             <div
               className="
-            flex w-full flex-col items-left justify-left h-full 
+            flex w-full flex-col items-left justify-left h-full
             p-5
-            sm:p-1 
+            sm:p-1
             md:pl-[6rem]
-            lg:w-full lg:justify-center lg:pl-0 
+            lg:w-full lg:justify-center lg:pl-0
             xl:pl-[3rem] xl:mb-[5rem]"
             >
               <div className="title">
                 <h1
                   className="w-full text-left p-3 text-2xl font-bold font-courierPrime  text-[#E86A33] leading-9 justify-left mt-[10rem] mt:[10rem]
-                md:text-[32px] md:pl-[3rem] md:pt-[6rem] md:mb-[-1.5rem] md:mt-[7.25rem] 
+                md:text-[32px] md:pl-[3rem] md:pt-[6rem] md:mb-[-1.5rem] md:mt-[7.25rem]
                 lg:pl-[12.5rem] lg:pt-[6rem] lg:text-[32px]
                 xl:pt-[0.5rem] xl:pl-[1.5rem]
                 "
@@ -229,186 +248,10 @@ export default function Signup() {
                 xl:mr-1 xl:w-[805px] xl:ml-[-3rem]
                 3xl:w-[1000px]"
               >
-                <div
-                  className={`relative mt-7 mb-5 xl:w-full w-full ${
-                    formik.errors.username && formik.touched.username
-                      ? "animate__animated animate__shakeX"
-                      : ""
-                  }`}
-                >
-                  <input
-                    type="username"
-                    id="username"
-                    className="
-                    w-full px-12 py-2 h-[72px] font-light placeholder-gray-400 rounded-xl border border-gray-500 focus:outline-orange-200 focus:ring-0
-                    md:w-[672x]
-                    xl:text-base "
-                    placeholder="Please enter your Username"
-                    autoComplete="off"
-                    {...formik.getFieldProps("username")}
-                  />
-                  <label
-                    htmlFor="username"
-                    className="floating-label font-bold absolute left-4 -top-4 px-3 bg-white text-xl text-black transition-all duration-200 pointer-events-none"
-                  >
-                    Username
-                  </label>
-                </div>
-                {formik.errors.username && formik.touched.username && (
-                  <span className="text-rose-500 pl-6">
-                    {formik.errors.username}
-                  </span>
-                )}
+                { !showVerify && getSingupFormFields() }
 
-                <div
-                  className={`relative mt-7 mb-5 w-full ${
-                    formik.errors.email && formik.touched.email
-                      ? "animate__animated animate__shakeX"
-                      : ""
-                  }`}
-                >
-                  <input
-                    type="email"
-                    id="email"
-                    className="
-                    w-full px-12 py-2 h-[72px] font-light placeholder-gray-400 rounded-xl border border-gray-500 focus:outline-orange-200 focus:ring-0
-                    xl:text-base
-                    md:w-[672x]"
-                    placeholder="Please enter your Email ID"
-                    autoComplete="off"
-                    {...formik.getFieldProps("email")}
-                  />
-                  <label
-                    htmlFor="email"
-                    className="
-                    floating-label font-bold absolute left-4 -top-4 px-3 bg-white text-xl text-black transition-all duration-200 pointer-events-none"
-                  >
-                    Email
-                  </label>
-                </div>
-                {formik.errors.email && formik.touched.email && (
-                  <span className="text-rose-500 pl-6">
-                    {formik.errors.email}
-                  </span>
-                )}
+                { showVerify && getOTPFormFields() }
 
-                <div
-                  className={`relative mt-7 mb-5 w-full ${
-                    formik.errors.password && formik.touched.password
-                      ? "animate__animated animate__shakeX"
-                      : ""
-                  }`}
-                >
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    className="
-                      font-light placeholder-gray-400 rounded-xl border border-gray-500 focus:outline-orange-200 focus:ring-0 w-full px-12 py-2 h-[72px]
-                      md:w-[672x]
-                      xl:text-base"
-                    placeholder="Please enter your Password"
-                    {...formik.getFieldProps("password")}
-                  />
-                  {showPassword ? (
-                    <AiOutlineEyeInvisible
-                      className="absolute h-5 w-5 top-2/4 right-7 transform -translate-y-2/4 text-gray-500 cursor-pointer"
-                      onClick={() => setShowPassword(false)}
-                    />
-                  ) : (
-                    <AiOutlineEye
-                      className="absolute h-5 w-5 top-2/4 right-7 transform -translate-y-2/4 text-gray-500 cursor-pointer"
-                      onClick={() => setShowPassword(true)}
-                    />
-                  )}
-                  <label
-                    htmlFor="password"
-                    className="
-                    floating-label font-bold absolute left-4 -top-4 px-3 bg-white text-xl text-black transition-all duration-200 pointer-events-none"
-                  >
-                    Password
-                  </label>
-                </div>
-                {formik.errors.password && formik.touched.password && (
-                  <span className="text-rose-500 pl-6">
-                    {formik.errors.password}
-                  </span>
-                )}
-                <div className="flex flex-col justify-center items-center mt-5 mb-4" >
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey={
-                      process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string
-                    }
-                    onChange={(token: any) => handleRecaptchaVerify(token)}
-                  />
-
-                  {recaptchaValue === "" && isFormFilled && (
-                    <span className="text-rose-500 pl-6">
-                      "Please complete the reCAPTCHA"
-                    </span>
-                  )}
-                </div>
-                <div className="mt-2 mb-4 flex flex-col ">
-                  <button
-                    className="text-center
-                    mt-5 rounded-3xl bg-gradient-to-r from-orange-100 to-orange-200  sm:py-4 px-[72px] text-slate-50 font-courier-prime text-lg sm:text-2xl py-4
-                    lg:px-4 lg:py-4 
-                    xl:px-4 xl:py-3"
-                    type="submit"
-                    disabled={
-                      loading || !_.isEmpty(formik.errors) || !recaptchaValue
-                    }
-                  >
-                    Register to pfft
-                  </button>
-                  <p className="text-center font-courierPrime mt-8 sm:text-lg text-xl font-bold ">
-                    Already have an account?{" "}
-                    <Link
-                      className="
-                      text-orange-200 font-courierPrime hover:border-red-500 font-bold text-xl
-                      md:text-xl "
-                      style={{ textDecoration: "none" }}
-                      href="/signin"
-                    >
-                      Log in
-                    </Link>
-                  </p>
-                  <div
-                    className="
-                  flex justify-center mt-7 space-x-9"
-                  >
-                    <div className="w-full h-5">
-                      <Image
-                        alt="divider"
-                        src="/assets/images/divider.svg"
-                        width={1000}
-                        height={220}
-                      />
-                    </div>
-                  </div>
-                  <div
-                    className="
-                  mx-auto mt-4 flex pl-3 items-center justify-center rounded-md p-2 border border-solid border-orange-300"
-                  >
-                    <span>
-                      <Image
-                        src="/assets/google.png"
-                        alt="google"
-                        width={35}
-                        height={27}
-                      />
-                    </span>
-                    <button
-                      className="
-                      w-full text-gray-700 pl-4 px-8 py-1 text-[17px] font-bold font-courierPrime"
-                      type="button"
-                      //disabled={process.env.IS_PRODUCTION === "true" ? false : true}
-                      onClick={handleGoogle}
-                    >
-                      Signup with Google
-                    </button>
-                  </div>
-                </div>
               </form>
             </div>
           </div>
@@ -425,4 +268,230 @@ export default function Signup() {
       </div>
     </>
   );
+
+  function getSingupFormFields() {
+    return (
+        <>
+          <div
+              className={`relative mt-7 mb-5 xl:w-full w-full ${
+                  formik.errors.username && formik.touched.username
+                      ? "animate__animated animate__shakeX"
+                      : ""
+              }`}
+          >
+            <input
+                type="username"
+                id="username"
+                className="
+                    w-full px-12 py-2 h-[72px] font-light placeholder-gray-400 rounded-xl border border-gray-500 focus:outline-orange-200 focus:ring-0
+                    md:w-[672x]
+                    xl:text-base "
+                placeholder="Please enter your Username"
+                autoComplete="off"
+                {...formik.getFieldProps("username")}
+            />
+            <label
+                htmlFor="username"
+                className="floating-label font-bold absolute left-4 -top-4 px-3 bg-white text-xl text-black transition-all duration-200 pointer-events-none"
+            >
+              Username
+            </label>
+          </div>
+          {formik.errors.username && formik.touched.username && (
+              <span className="text-rose-500 pl-6">
+                    {formik.errors.username}
+                  </span>
+          )}
+
+          <div
+              className={`relative mt-7 mb-5 w-full ${
+                  formik.errors.email && formik.touched.email
+                      ? "animate__animated animate__shakeX"
+                      : ""
+              }`}
+          >
+            <input
+                type="email"
+                id="email"
+                className="
+                    w-full px-12 py-2 h-[72px] font-light placeholder-gray-400 rounded-xl border border-gray-500 focus:outline-orange-200 focus:ring-0
+                    xl:text-base
+                    md:w-[672x]"
+                placeholder="Please enter your Email ID"
+                autoComplete="off"
+                {...formik.getFieldProps("email")}
+            />
+            <label
+                htmlFor="email"
+                className="
+                    floating-label font-bold absolute left-4 -top-4 px-3 bg-white text-xl text-black transition-all duration-200 pointer-events-none"
+            >
+              Email
+            </label>
+          </div>
+          {formik.errors.email && formik.touched.email && (
+              <span className="text-rose-500 pl-6">
+                    {formik.errors.email}
+                  </span>
+          )}
+
+          <div
+              className={`relative mt-7 mb-5 w-full ${
+                  formik.errors.password && formik.touched.password
+                      ? "animate__animated animate__shakeX"
+                      : ""
+              }`}
+          >
+            <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className="
+                      font-light placeholder-gray-400 rounded-xl border border-gray-500 focus:outline-orange-200 focus:ring-0 w-full px-12 py-2 h-[72px]
+                      md:w-[672x]
+                      xl:text-base"
+                placeholder="Please enter your Password"
+                {...formik.getFieldProps("password")}
+            />
+            {showPassword ? (
+                <AiOutlineEyeInvisible
+                    className="absolute h-5 w-5 top-2/4 right-7 transform -translate-y-2/4 text-gray-500 cursor-pointer"
+                    onClick={() => setShowPassword(false)}
+                />
+            ) : (
+                <AiOutlineEye
+                    className="absolute h-5 w-5 top-2/4 right-7 transform -translate-y-2/4 text-gray-500 cursor-pointer"
+                    onClick={() => setShowPassword(true)}
+                />
+            )}
+            <label
+                htmlFor="password"
+                className="
+                    floating-label font-bold absolute left-4 -top-4 px-3 bg-white text-xl text-black transition-all duration-200 pointer-events-none"
+            >
+              Password
+            </label>
+          </div>
+          {formik.errors.password && formik.touched.password && (
+              <span className="text-rose-500 pl-6">
+                    {formik.errors.password}
+                  </span>
+          )}
+          <div className="flex flex-col justify-center items-center mt-5 mb-4" >
+            <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={
+                  process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string
+                }
+                onChange={(token: any) => handleRecaptchaVerify(token)}
+            />
+
+            {recaptchaValue === "" && isFormFilled && (
+                <span className="text-rose-500 pl-6">
+                      "Please complete the reCAPTCHA"
+                    </span>
+            )}
+          </div>
+          <div className="mt-2 mb-4 flex flex-col ">
+            <button
+                className="text-center
+                    mt-5 rounded-3xl bg-gradient-to-r from-orange-100 to-orange-200  sm:py-4 px-[72px] text-slate-50 font-courier-prime text-lg sm:text-2xl py-4
+                    lg:px-4 lg:py-4
+                    xl:px-4 xl:py-3"
+                type="submit"
+                disabled={
+                  loading || !_.isEmpty(formik.errors) || !recaptchaValue
+                }
+            >
+              Register to pfft
+            </button>
+            <p className="text-center font-courierPrime mt-8 sm:text-lg text-xl font-bold ">
+              Already have an account?{" "}
+              <Link
+                  className="
+                      text-orange-200 font-courierPrime hover:border-red-500 font-bold text-xl
+                      md:text-xl "
+                  style={{ textDecoration: "none" }}
+                  href="/signin"
+              >
+                Log in
+              </Link>
+            </p>
+            <div
+                className="
+                  flex justify-center mt-7 space-x-9"
+            >
+              <div className="w-full h-5">
+                <Image
+                    alt="divider"
+                    src="/assets/images/divider.svg"
+                    width={1000}
+                    height={220}
+                />
+              </div>
+            </div>
+            <div
+                className="
+                  mx-auto mt-4 flex pl-3 items-center justify-center rounded-md p-2 border border-solid border-orange-300"
+            >
+                    <span>
+                      <Image
+                          src="/assets/google.png"
+                          alt="google"
+                          width={35}
+                          height={27}
+                      />
+                    </span>
+              <button
+                  className="
+                      w-full text-gray-700 pl-4 px-8 py-1 text-[17px] font-bold font-courierPrime"
+                  type="button"
+                  //disabled={process.env.IS_PRODUCTION === "true" ? false : true}
+                  onClick={handleGoogle}
+              >
+                Signup with Google
+              </button>
+            </div>
+          </div>
+        </>
+    );
+  }
+
+  function getOTPFormFields() {
+    return (
+        <>
+
+          <p className="text-center font-courierPrime mt-8 sm:text-lg text-xl font-bold">
+            Please check your email.<br /> We have sent you verification link.
+          </p>
+
+          <div className="mt-8">
+            <div
+                className={`relative mt-7 mb-5 xl:w-full w-full mt-8 ${
+                    formik.errors.username && formik.touched.username
+                        ? "animate__animated animate__shakeX"
+                        : ""
+                }`}
+            >
+            </div>
+
+            <p className="text-center font-courierPrime mt-8 sm:text-lg  ">
+              Already have an account?{" "}
+              <Link
+                  className="
+                        text-orange-200 font-courierPrime hover:border-red-500 font-bold text-xl
+                        md:text-xl "
+                  style={{ textDecoration: "none" }}
+                  href="/signin"
+              >
+                Login
+              </Link>
+            </p>
+          </div>
+
+          <div className="mt-2 mb-4 flex flex-col ">
+
+          </div>
+        </>
+    );
+  }
 }
