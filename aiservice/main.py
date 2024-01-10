@@ -93,8 +93,12 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         # Assuming the API returns a JSON response
         response_json = response.json()
     
-        # Correctly extract the text from the response JSON.
-        processed_opinion = trim_text(response_json['choices'][0]['text'].strip())
+        # Check if 'choices' key is in the response JSON and it contains 'text'
+        if 'choices' in response_json and len(response_json['choices']) > 0 and 'text' in response_json['choices'][0]:
+            processed_opinion = trim_text(response_json['choices'][0]['text'].strip().lower())
+        else:
+            print("Dude, 'choices' key or 'text' field not found in response!")
+            return "", response_json  # Returns an empty string and the response JSON
     
         # Return both the processed opinion and the entire response.
         return processed_opinion, response_json  # Returns a tuple with the string and the response JSON
@@ -108,6 +112,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         # Handle other possible errors (e.g., network issues)
         print(f"An error occurred: {err}")
         return "", {"error": str(err)}  # Returns an empty string and the error information
+
 
 
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
