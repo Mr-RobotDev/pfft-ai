@@ -1,4 +1,4 @@
-# pip install ipywidgets
+# pip install ipywidgets 
 # pip install openai
 from flask import Flask, request, jsonify
 import openai
@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 174, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     full_prompt = "This satirical headline writing tool translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + "->"
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
@@ -92,12 +92,12 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     try:
         print(f"Sending prompt to together.ai: {payload}")
         response = requests.post(url, json=payload, headers=headers)
-        print(f"Received response from together.ai: {response.json()}")
+        print(f"Received response from together.ai: {response.json()}")  
         response.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code.
-
+    
         # Assuming the API returns a JSON response
         response_json = response.json()
-
+    
         # Checking if 'output' and 'choices' keys are present and structured as expected
         if 'output' in response_json and 'choices' in response_json['output'] and len(response_json['output']['choices']) > 0:
             processed_opinion = trim_text(response_json['output']['choices'][0]['text'].strip())
@@ -105,15 +105,15 @@ def process_opinion(opinion: str, processing_count: int) -> str:
             print("Unexpected response format or 'choices' not in response.")
             return "", {"error": "Unexpected response format or 'choices' not in response."}
 
-
+    
         # Return both the processed opinion and the entire response.
         return processed_opinion, response_json  # Returns a tuple with the string and the response JSON
-
+    
     except requests.exceptions.HTTPError as http_err:
         # Handle HTTP errors (e.g., response code 4xx, 5xx)
         print(f"HTTP error occurred: {http_err}")
         return "", {"error": str(http_err), "status_code": response.status_code}  # Returns an empty string and the error information
-
+    
     except Exception as err:
         # Handle other possible errors (e.g., network issues)
         print(f"An error occurred: {err}")
@@ -121,22 +121,20 @@ def process_opinion(opinion: str, processing_count: int) -> str:
 
 
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
-    output = generate_text(prompt, engine=engine, max_tokens=170, stop=["##","!","<","#"])
-    print(f"First OpenAI response in check_and_retry: {output}")  # Add this line
+    output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
-
+    
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, max_tokens=170, stop=["##","!","<","#"])
-        print(f"Second OpenAI response in check_and_retry: {output}")  # Add this line
+        output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
         output = trim_text(output)  # Trim the output text again
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
-
+        
         if not plagiarism_results:
             return output
-
+    
     return None
 
 
@@ -170,18 +168,18 @@ def generate_article():
 
         opinion = request_data['opinion']
         headline = request_data['headline']
-
+        
         # New step to process the opinion with Prompt A or B
         processed_opinion, _ = process_opinion(opinion, 1)  # Unpacking the tuple to get just the text
         new_prompt = f" {processed_opinion} -> {headline} ###Add Article:"
         print(f"Generating with prompt: {new_prompt}")  # Print statement before sending the prompt
-
+    
         # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=500, stop=["!Article Complete","!E","###","##"])
+        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=500, stop=["!Article Complete","!E","###","##")
         print(f"Received article: {new_result}")  # Print statement after receiving the response
 
         flagged, moderation_output = moderate_content(new_result)
-
+    
         if not flagged:
             print(f"\nGenerated article:")
             print("jh" , new_result)
@@ -210,7 +208,7 @@ def generate_headline():
             return jsonify({'error': 'Invalid request. opinion is missing.'}), 400
 
         opinion = request_data['opinion']
-
+        
         # New step to process the opinion with Prompt A or B
         processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
         prompt = f"{processed_opinion} "
@@ -221,17 +219,16 @@ def generate_headline():
         for i in range(7):
             processed_opinion, _ = process_opinion(opinion, i)  # Unpack the tuple to get the string
             processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
-            prompt = f"{processed_opinion} "
+            prompt = f"{processed_opinion} ->"
             result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
-            print(f"Full OpenAI response for headline generation: {result}")  # Add this line
             print(f"Received headline: {result}")  # Print statement after receiving the response
 
             if result:
                 flagged, moderation_output = moderate_content(result)
                 if not flagged:
                     if not contains_blocked_words(result, blocked_words):
-                        final_outputs.append(result)
-
+                        final_outputs.append(result)              
+        
         if not final_outputs:
             return jsonify({'status': True, 'headlines': final_outputs, 'prompt':prompt}), 400
         else:
