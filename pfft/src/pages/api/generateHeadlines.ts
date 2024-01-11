@@ -25,7 +25,7 @@ async function GenerateHeadlines(req: NextApiRequest, res: NextApiResponse) {
     res.status(200).json(headlines);
   } catch (error:any) {
     console.log(error);
-    res.status(500).json({ error: "An error occurred", data: error.message });
+    res.status(500).json({ error: "An error occurred", data:req.body, msg: error.message });
   }
 }
 
