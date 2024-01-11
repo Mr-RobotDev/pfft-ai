@@ -122,6 +122,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
 
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
     output = generate_text(prompt, engine=engine, max_tokens=170, stop=["##","!","<","#"])
+    print(f"First OpenAI response in check_and_retry: {output}")  # Add this line
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
 
@@ -129,6 +130,7 @@ def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") 
         return output
     else:
         output = generate_text(prompt, engine=engine, max_tokens=170, stop=["##","!","<","#"])
+        print(f"Second OpenAI response in check_and_retry: {output}")  # Add this line
         output = trim_text(output)  # Trim the output text again
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
 
@@ -219,8 +221,9 @@ def generate_headline():
         for i in range(7):
             processed_opinion, _ = process_opinion(opinion, i)  # Unpack the tuple to get the string
             processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
-            prompt = f"{processed_opinion} ->"
+            prompt = f"{processed_opinion} "
             result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            print(f"Full OpenAI response for headline generation: {result}")  # Add this line
             print(f"Received headline: {result}")  # Print statement after receiving the response
 
             if result:
