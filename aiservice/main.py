@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 174, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     full_prompt = "This satirical headline writing tool translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + "->"
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
@@ -121,14 +121,14 @@ def process_opinion(opinion: str, processing_count: int) -> str:
 
 
 def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
-    output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
+    output = generate_text(prompt, engine=engine, max_tokens=170, stop=["##","!","<","#"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
 
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
+        output = generate_text(prompt, engine=engine, max_tokens=170, stop=["##","!","<","#"])
         output = trim_text(output)  # Trim the output text again
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
 
