@@ -1,7 +1,7 @@
 # pip install ipywidgets 
 # pip install openai
 from flask import Flask, request, jsonify
-import openai
+import openai as OpenAI
 import pandas as pd
 from typing import List, Tuple, Optional
 from dotenv import load_dotenv
@@ -15,7 +15,7 @@ def trim_text(text: str) -> str:
 load_dotenv('.env')
 
 app = Flask(__name__)
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI.Client(api_key=os.environ.get("OPENAI_API_KEY"))
 together.api_key = os.environ.get("TOGETHER_API_KEY")
 
 def jaccard_similarity(s1: set, s2: set) -> float:
@@ -55,7 +55,7 @@ def generate_text(prompt: str, model="davinci:ft-ai100-2023-06-03-18-54-09", max
     }
     print(f"Sending full request to OpenAI: {request_details}")
     
-    response = openai.Completion.create(**request_details)
+    response = client.Completion.create(**request_details) 
     print(f"Received response from OpenAI: {response.choices[0].text.strip()}")
     return trim_text(response.choices[0].text.strip())
 
@@ -144,7 +144,7 @@ def check_and_retry(prompt: str, model="davinci:ft-ai100-2023-06-03-18-54-09") -
 
 
 def moderate_content(text: str) -> Tuple[bool, dict]:
-    moderation_response = openai.Moderation.create(input=text)
+    moderation_response = client.Moderation.create(input=text)
     output = moderation_response["results"][0]
     flagged = output.get("flagged")
     return flagged, output
