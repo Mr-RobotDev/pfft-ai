@@ -42,18 +42,23 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
 
 def generate_text(prompt: str, model="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     full_prompt = "This satirical headline writing tool translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + "->"
-    print(f"Sending prompt to OpenAI: {full_prompt}")
-    response = openai.Completion.create(
-        model=model,
-        prompt=full_prompt,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        n=1,
-        stop=stop,
-        timeout=30,
-    )
+    
+    # Printing the full request details
+    request_details = {
+        "model": model,
+        "prompt": full_prompt,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "n": 1,
+        "stop": stop,
+        "timeout": 30
+    }
+    print(f"Sending full request to OpenAI: {request_details}")
+    
+    response = openai.Completion.create(**request_details)
     print(f"Received response from OpenAI: {response.choices[0].text.strip()}")
     return trim_text(response.choices[0].text.strip())
+
 
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
