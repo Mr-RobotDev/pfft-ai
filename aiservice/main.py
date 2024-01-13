@@ -5,7 +5,7 @@ import openai
 import pandas as pd
 from typing import List, Tuple, Optional
 from dotenv import load_dotenv
-import os
+import os, sys
 import together
 import requests
 
@@ -240,4 +240,5 @@ def generate_headline():
 application = app
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=105, debug=True)
+    debug = "--debug" in sys.argv
+    app.run(host='localhost', port=105, debug=debug)
