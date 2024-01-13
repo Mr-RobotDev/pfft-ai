@@ -175,7 +175,7 @@ def generate_article():
         print(f"Generating with prompt: {new_prompt}")  # Print statement before sending the prompt
     
         # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=500, stop=["!Article Complete","!E","###","##")
+        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=500, stop=["!Article Complete","!E","###","##"])
         print(f"Received article: {new_result}")  # Print statement after receiving the response
 
         flagged, moderation_output = moderate_content(new_result)
@@ -220,7 +220,7 @@ def generate_headline():
             processed_opinion, _ = process_opinion(opinion, i)  # Unpack the tuple to get the string
             processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            result = check_and_retry(prompt, engine="ft:davinci-002:ai100::8ciHX6XM")
             print(f"Received headline: {result}")  # Print statement after receiving the response
 
             if result:
@@ -240,4 +240,4 @@ def generate_headline():
 application = app
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=105)
+    app.run(host='localhost', port=105, debug=True)

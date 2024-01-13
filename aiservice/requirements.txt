@@ -62,4 +62,4 @@ Werkzeug==2.3.6
 widgetsnbextension==4.0.8
 yarl==1.9.2
 zipp==3.16.0
-together==0.2.10
+together==0.2.4
