@@ -172,7 +172,7 @@ def generate_article():
             "model": "mistralai/Mistral-7B-Instruct-v0.1",
             "prompt": mistral_prompt,
             "max_tokens": 600,  # Increased for a longer article
-            "stop": ["\n"],  # Adjusted stopping condition for article
+            "stop": ["!ARTICLE","</s>"],  # Adjusted stopping condition for article
             "temperature": 0.7,
             "top_p": 0.9,
             "top_k": 70,
