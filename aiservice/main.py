@@ -58,17 +58,17 @@ def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_toke
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
     if mod_value == 0:
-        prompt = "<s>[INST] Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion in absurdly extreme way. Output only sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 1:
-        prompt = "<s>[INST] Add very specific hyperbolic detail to foolishly deny the opinion. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add very specific hyperbolic extremely awkward detail to foolishly deny the opinion. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 2:
-        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail. Output only one short sentenc. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically and ironically with a hyper-specific detail. Output only one short sentenc. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 3:
         prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 4:
-        prompt = "<s>[INST] Take the opinion and make it rationally justified with a specific persuasive and funny example. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Take the opinion and make it rationally justified with a specific persuasive and hilarious example. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 5:
-        prompt = "<s>[INST] Repeat the opinion with more detail. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Give a relatable example of the opinion. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 6:
         prompt = "<s>[INST] Add extreme detail to the opinion and include no punctuation. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
 
