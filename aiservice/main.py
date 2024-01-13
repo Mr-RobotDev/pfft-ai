@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os, sys
 import together
 import requests
+from flask_cors import CORS
 
 def trim_text(text: str) -> str:
     return ' '.join(text.split())
@@ -15,6 +16,7 @@ def trim_text(text: str) -> str:
 load_dotenv('.env')
 
 app = Flask(__name__)
+CORS(app)
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 together.api_key = os.environ.get("TOGETHER_API_KEY")
 

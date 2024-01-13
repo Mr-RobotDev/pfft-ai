@@ -158,5 +158,10 @@
       "@semantic-release/github"
     ]
   },
+  "devServer": { 
+    "inline": true, 
+    "port": 3000, 
+    "proxy": { "/api/**": { "target": "http://localhost:105", "secure": false }  }
+ },
   "author": "Ixartz (https://github.com/ixartz)"
 }
