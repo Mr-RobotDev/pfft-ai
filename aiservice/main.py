@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
     full_prompt = "This satirical headline writing tool translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + "->"
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
@@ -120,7 +120,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM") -> str:
     output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
@@ -220,7 +220,7 @@ def generate_headline():
             processed_opinion, _ = process_opinion(opinion, i)  # Unpack the tuple to get the string
             processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, engine="davinci:ft-ai100-2023-06-03-18-54-09")
+            result = check_and_retry(prompt, engine="ft:davinci-002:ai100::8ciHX6XM")
             print(f"Received headline: {result}")  # Print statement after receiving the response
 
             if result:
