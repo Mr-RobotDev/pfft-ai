@@ -41,7 +41,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
     return False
 
 def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
-    full_prompt = "This satirical headline writing tool translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + ""
+    full_prompt = "" + prompt + ""
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
         engine=engine,
