@@ -40,8 +40,8 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
-    full_prompt = "This satirical headline writing tool translates an idea or opinion into a satirical news headline by passing this idea or opinion through one or more humor techniques such as irony, exaggeration, wordplay, reversal, shock, hyperbole, incongruity, meta humor, benign violation, madcap, unexpected endings, character, reference, brevity, parody, rhythm, analogy, the rule of 3, and/or misplaced focus and outputs a hilarious satirical headline. Begin: " + prompt + "->"
+def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+    full_prompt = "" + prompt + ""
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
         engine=engine,
@@ -58,19 +58,19 @@ def generate_text(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09", ma
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
     if mod_value == 0:
-        prompt = "<s>[INST] Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one long and detailed sentence, then add one space and ###. If the opinion is not in english, you simply output: 'no'. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one detailed sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 1:
-        prompt = "<s>[INST] Add very specific hyperbolic detail to foolishly deny the opinion. Output one long and detailed sentence, then add one space and ###. If the opinion is not in english, you simply output: 'no'. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add very specific hyperbolic detail to foolishly deny the opinion. Output one detailed sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 2:
-        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one detailed sentence, then add one space and ###. If the opinion is not in english, you simply output: 'no'. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 3:
-        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one detailed sentence, then add one space ###. If the opinion is not in english, you simply output: 'no'. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one detailed sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 4:
-        prompt = "<s>[INST] Take the opinion and make it rationally justified with a specific persuasive and funny example. Output one long detailed sentence, then add one space and ###. If the opinion is not in english, you simply output: 'no'. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Take the opinion and make it rationally justified with a specific persuasive and funny example. Output one entence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 5:
-        prompt = "<s>[INST] Repeat the opinion with more detail. Output one detailed sentence, then add one space and ###. If the opinion is not in english, you simply output: 'no'. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Repeat the opinion with more detail. Output one detailed sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 6:
-        prompt = "<s>[INST] Add extreme detail to the opinion and include no punctuation. Output one detailed sentence, then add one space and ###. If the opinion is not in english, you simply output: 'no'. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add extreme detail to the opinion and include no punctuation. OPINION: " + opinion + "\nOUTPUT: [/INST]"
 
     url = "https://api.together.xyz/inference"
     payload = {
@@ -120,7 +120,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, engine="davinci:ft-ai100-2023-06-03-18-54-09") -> str:
+def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM") -> str:
     output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
@@ -175,7 +175,7 @@ def generate_article():
         print(f"Generating with prompt: {new_prompt}")  # Print statement before sending the prompt
     
         # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=500, stop=["!Article Complete","!E","###","##"])
+        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##"])
         print(f"Received article: {new_result}")  # Print statement after receiving the response
 
         flagged, moderation_output = moderate_content(new_result)
@@ -185,7 +185,7 @@ def generate_article():
             print("jh" , new_result)
         else:
             # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=500, stop=["!Article Complete","!E","###","##"])
+            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##"])
             flagged, moderation_output = moderate_content(new_result)
             if not flagged:
                 print(f"\nArticle Generated")
