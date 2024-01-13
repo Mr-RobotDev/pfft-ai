@@ -55,7 +55,7 @@ def generate_text(prompt: str, model="davinci:ft-ai100-2023-06-03-18-54-09", max
     }
     print(f"Sending full request to OpenAI: {request_details}")
     
-    response = client.Completion.create(**request_details) 
+    response = client.completions.create(**request_details) 
     print(f"Received response from OpenAI: {response.choices[0].text.strip()}")
     return trim_text(response.choices[0].text.strip())
 
