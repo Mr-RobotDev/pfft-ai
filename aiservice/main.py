@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.8) -> str:
     full_prompt = "" + prompt + ""
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
@@ -120,7 +120,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM") -> str:
+def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", temperature: float = 0.8) -> str:
     output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
@@ -173,7 +173,7 @@ def generate_article():
             "prompt": mistral_prompt,
             "max_tokens": 600,  # Increased for a longer article
             "stop": ["!ARTICLE","</s>"],  # Adjusted stopping condition for article
-            "temperature": 0.7,
+            "temperature": 0.8,
             "top_p": 0.9,
             "top_k": 70,
             "repetition_penalty": 1.2
