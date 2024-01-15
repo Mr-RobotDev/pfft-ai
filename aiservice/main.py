@@ -41,7 +41,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
     return False
 
 def generate_text(prompt: str, engine="ft:davinci-002:ai100::8h721I19", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
-    full_prompt = "write an effing hilarous satirical headline expressing this opinion: " + prompt + ""
+    full_prompt = "write an effing hilarous satirical headline expressing this opinion, don't be afraid to use shock comedy and/or extreme hyperbole: " + prompt + ""
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
         engine=engine,
@@ -64,7 +64,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
     elif mod_value == 2:
         prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically and ironically with a hyper-specific detail. Output only one short sentenc. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 3:
-        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Make the opinion funnier (in a late-night comedy club kind of way) in one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 4:
         prompt = "<s>[INST] Take the opinion and make it rationally justified with a specific persuasive and hilarious example. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 5:
