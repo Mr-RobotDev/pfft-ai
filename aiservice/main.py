@@ -1,7 +1,7 @@
 # pip install ipywidgets
 # pip install openai
 from flask import Flask, request, jsonify
-import openai
+from openai import OpenAI
 import pandas as pd
 from typing import List, Tuple, Optional
 from dotenv import load_dotenv
@@ -15,7 +15,7 @@ def trim_text(text: str) -> str:
 load_dotenv('.env')
 
 app = Flask(__name__)
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 together.api_key = os.environ.get("TOGETHER_API_KEY")
 
 def jaccard_similarity(s1: set, s2: set) -> float:
@@ -40,20 +40,19 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="ft:davinci-002:ai100::8h721I19", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.8) -> str:
-    full_prompt = "write a fucking hilarious headline based on the opinion: " + prompt + ""
-    print(f"Sending prompt to OpenAI: {full_prompt}")
-    response = openai.Completion.create(
-        engine=engine,
-        prompt=full_prompt,
-        temperature=temperature,
+def generate_text(prompt: str, model="gpt-4.0-turbo", max_tokens: int = 124, temperature: float = 0.72) -> str:
+    completion = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": "this AI writes hilarious satirical headlines, and don't shy away from shock comedy and ruffling feathers"},
+            {"role": "user", "content": prompt}
+        ],
         max_tokens=max_tokens,
-        n=1,
-        stop=stop,
-        timeout=30,
+        temperature=temperature
     )
-    print(f"Received response from OpenAI: {response.choices[0].text.strip()}")
-    return trim_text(response.choices[0].text.strip())
+    output = completion.choices[0].message['content']
+    print(f"Received response from OpenAI: {output}")
+    return trim_text(output)
 
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
@@ -120,16 +119,35 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8h721I19", temperature: float = 0.8) -> str:
-    output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
-    output = trim_text(output)  # Trim the output text
+def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", temperature: float = 0.72) -> str:
+    completion = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": "this AI writes hilarious satirical headlines, and don't shy away from shock comedy and ruffling feathers"},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=120,
+        temperature=temperature
+    )
+    output = completion.choices[0].message['content']
+    output = trim_text(output)
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
-        output = trim_text(output)  # Trim the output text again
+        # Retry generation with the same prompt
+        completion = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=120,
+            temperature=temperature
+        )
+        output = completion.choices[0].message['content']
+        output = trim_text(output)
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         
         if not plagiarism_results:
@@ -138,9 +156,10 @@ def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8h721I19", temper
     return None
 
 
+
 def moderate_content(text: str) -> Tuple[bool, dict]:
-    moderation_response = openai.Moderation.create(input=text)
-    output = moderation_response["results"][0]
+    response = client.moderations.create(input=text)
+    output = response.results[0]
     flagged = output.get("flagged")
     return flagged, output
 
@@ -214,18 +233,15 @@ def generate_headline():
         opinion = request_data['opinion']
         
         # New step to process the opinion with Prompt A or B
-        processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
-        prompt = f"{processed_opinion} "
-        print(f"Generating with prompt: {prompt}")  # Print statement before sending the prompt
-
+        processed_opinion = process_opinion(opinion, 1)
         final_outputs = []
 
         for i in range(7):
-            processed_opinion, _ = process_opinion(opinion, i)  # Unpack the tuple to get the string
-            processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
+            processed_opinion, _ = process_opinion(opinion, i)
+            processed_opinion = processed_opinion.lower()
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, engine="ft:davinci-002:ai100::8h721I19")
-            print(f"Received headline: {result}")  # Print statement after receiving the response
+            result = check_and_retry(prompt, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9")  # Updated to match new client usage
+            print(f"Received headline: {result}")
 
             if result:
                 flagged, moderation_output = moderate_content(result)
@@ -240,6 +256,7 @@ def generate_headline():
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)}), 500
+
 
 application = app
 
