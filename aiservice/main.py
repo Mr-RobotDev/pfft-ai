@@ -41,7 +41,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
     return False
 
 def generate_text(prompt: str, engine="ft:davinci-002:ai100::8h721I19", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
-    full_prompt = "write an effing hilarous satirical headline expressing this opinion, don't be afraid to use shock comedy and/or extreme hyperbole: " + prompt + ""
+    full_prompt = "" + prompt + ""
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
         engine=engine,
