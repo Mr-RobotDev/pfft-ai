@@ -1,7 +1,7 @@
 # pip install ipywidgets
 # pip install openai
 from flask import Flask, request, jsonify
-from openai import OpenAI
+import openai as OpenAI
 import pandas as pd
 from typing import List, Tuple, Optional
 from dotenv import load_dotenv
