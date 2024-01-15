@@ -40,7 +40,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="ft:davinci-002:ai100::8h721I19", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
+def generate_text(prompt: str, engine="ft:davinci-002:ai100::8h721I19", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.8) -> str:
     full_prompt = "write a fucking hilarious headline based on the opinion: " + prompt + ""
     print(f"Sending prompt to OpenAI: {full_prompt}")
     response = openai.Completion.create(
@@ -120,7 +120,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8h721I19", temperature: float = 0.7) -> str:
+def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8h721I19", temperature: float = 0.8) -> str:
     output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
     output = trim_text(output)  # Trim the output text
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
