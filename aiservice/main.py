@@ -15,7 +15,8 @@ def trim_text(text: str) -> str:
 load_dotenv('.env')
 
 app = Flask(__name__)
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+OpenAI.api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI
 together.api_key = os.environ.get("TOGETHER_API_KEY")
 
 def jaccard_similarity(s1: set, s2: set) -> float:
@@ -129,7 +130,7 @@ def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", 
         max_tokens=120,
         temperature=temperature
     )
-    output = completion.choices[0].message['content']
+    output = completion.choices[0].message.content
     output = trim_text(output)
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     
@@ -160,7 +161,7 @@ def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", 
 def moderate_content(text: str) -> Tuple[bool, dict]:
     response = client.moderations.create(input=text)
     output = response.results[0]
-    flagged = output.get("flagged")
+    flagged = output.flagged
     return flagged, output
 
 # Load spreadsheet data
