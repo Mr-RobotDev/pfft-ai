@@ -1,6 +1,5 @@
 # pip install ipywidgets
 # pip install openai
-import openai
 from flask import Flask, request, jsonify
 import openai as OpenAI
 import pandas as pd
@@ -131,7 +130,7 @@ def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", 
         max_tokens=120,
         temperature=temperature
     )
-    output = completion.choices[0].message['content']
+    output = completion.choices[0].message.content
     output = trim_text(output)
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     
@@ -162,7 +161,7 @@ def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", 
 def moderate_content(text: str) -> Tuple[bool, dict]:
     response = client.moderations.create(input=text)
     output = response.results[0]
-    flagged = output.get("flagged")
+    flagged = output.flagged
     return flagged, output
 
 # Load spreadsheet data
