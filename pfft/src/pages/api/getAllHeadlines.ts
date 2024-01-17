@@ -4,6 +4,8 @@ import nc from "next-connect";
 import HistoryModel from "@/models/history/history.model";
 
 async function getAllHeadlines(req: NextApiRequest, res: NextApiResponse) {
+  await dbConnect();
+
   if (req.method !== "GET") {
     return res.status(400).json({ message: "Invalid request method" });
   }
