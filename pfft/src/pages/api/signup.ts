@@ -1,9 +1,7 @@
 import handler from "@utils/handler";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-import User from "@/models/user/user.model";
-
-import dbConnect from "../../database/conn";
+import dbConnect from "@/database/conn";
+import UserModel from "@/models/user/user.model";
 
 const { promisify } = require('util');
 const crypto = require('crypto');
@@ -12,7 +10,6 @@ const bcrypt = require('bcrypt');
 //import PaymentRecord from "@/models/paymentRecord/paymentRecord.model";
 //import mongoose from "mongoose";
 import {sendVerificationEmail} from "@utils/EmailHelper";
-//import UserModel from "@/models/user/user.model";
 
 
 const saltRounds = 10; // Adjust according to your security needs
@@ -33,35 +30,21 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
   try {
     await dbConnect();
     //@ts-ignore
-    const newUser = await User.findOneOrCreate(req.body);
-
+    const newUser = await UserModel.findOneOrCreate(req.body);
     if (newUser.alreadyExist === true) {
-      const verificationToken = generateVerificationToken();
-      const hashedToken = await hashToken(verificationToken);
-
-      newUser.verificationCode = hashedToken;
-      newUser.isEmailVerified = false;
-      //await newUser.save();
-
-
-      const verificationLink = `https://pfft.ai/verify/${hashedToken}`;
-
-      sendVerificationEmail(req.body, verificationLink);
-
       return res.status(406).json({ message: "User Already Exists!" });
     } else {
 
+      const user = await UserModel.findOne({email: req.body.email});
+
       const verificationToken = generateVerificationToken();
       const hashedToken = await hashToken(verificationToken);
 
-      newUser.verificationCode = hashedToken;
-      newUser.isEmailVerified = false;
-
-      //await newUser.save();
-
-
-
-      //console.log(re);
+      if(user != null) {
+        user.verificationToken = hashedToken;
+        user.isVerified = false;
+        await user.save();
+      }
 
       const verificationLink = `https://pfft.ai/verify/${hashedToken}`;
 

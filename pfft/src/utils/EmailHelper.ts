@@ -50,7 +50,7 @@ export function sendSignUpEmail(user: any, credit: any, cost: any) {
 }
 export function sendVerificationEmail(user: any, link: any) {
     const content = getVerificationEmailContent()
-        .replace('[Customer Name]', user.name)
+        .replace('[Customer Name]', user.username)
         .replace('[Verification Link]', link);
 
     const subject = "Please Confirm Your Email for PFFT.AI";
