@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import handler from "@utils/handler";
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "@/database/conn";
@@ -5,11 +6,10 @@ import UserModel from "@/models/user/user.model";
 
 const { promisify } = require('util');
 const crypto = require('crypto');
-const bcrypt = require('bcrypt');
 
 //import PaymentRecord from "@/models/paymentRecord/paymentRecord.model";
 //import mongoose from "mongoose";
-import {sendVerificationEmail} from "@utils/EmailHelper";
+import { sendVerificationEmail } from "@utils/EmailHelper";
 
 
 const saltRounds = 10; // Adjust according to your security needs
@@ -18,7 +18,7 @@ const saltRounds = 10; // Adjust according to your security needs
 const generateVerificationToken = () => crypto.randomBytes(32).toString('hex');
 
 // Hash a token for secure storage
-const hashToken = async (token:any) => {
+const hashToken = async (token: any) => {
   const hash = await promisify(bcrypt.hash)(token, saltRounds);
   return hash;
 };
@@ -35,12 +35,12 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
       return res.status(406).json({ message: "User Already Exists!" });
     } else {
 
-      const user = await UserModel.findOne({email: req.body.email});
+      const user = await UserModel.findOne({ email: req.body.email });
 
       const verificationToken = generateVerificationToken();
       const hashedToken = await hashToken(verificationToken);
 
-      if(user != null) {
+      if (user != null) {
         user.verificationToken = hashedToken;
         user.isVerified = false;
         await user.save();
@@ -62,11 +62,11 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
       */
       return res.status(201).json({ message: "User Created!" });
     }
-  } catch (error : any) {
+  } catch (error: any) {
     console.error(error);
     if (error.code === 11000) {
-        return res.status(400).json({ error: "Username already exists" });
-      }
+      return res.status(400).json({ error: "Username already exists" });
+    }
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
