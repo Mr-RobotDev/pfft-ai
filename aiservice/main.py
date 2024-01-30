@@ -1,7 +1,7 @@
-# pip install ipywidgets 
+# pip install ipywidgets
 # pip install openai
 from flask import Flask, request, jsonify
-import openai
+import openai as OpenAI
 import pandas as pd
 from typing import List, Tuple, Optional
 from dotenv import load_dotenv
@@ -16,8 +16,8 @@ def trim_text(text: str) -> str:
 load_dotenv('.env')
 
 app = Flask(__name__)
-CORS(app)
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+OpenAI.api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI
 together.api_key = os.environ.get("TOGETHER_API_KEY")
 
 def jaccard_similarity(s1: set, s2: set) -> float:
@@ -42,37 +42,36 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM", max_tokens: int = 124, stop: Optional[str] = None, temperature: float = 0.7) -> str:
-    full_prompt = "" + prompt + ""
-    print(f"Sending prompt to OpenAI: {full_prompt}")
-    response = openai.Completion.create(
-        engine=engine,
-        prompt=full_prompt,
-        temperature=temperature,
+def generate_text(prompt: str, model="gpt-4.0-turbo", max_tokens: int = 124, temperature: float = 0.72) -> str:
+    completion = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": "this AI writes hilarious satirical headlines, and don't shy away from shock comedy and ruffling feathers"},
+            {"role": "user", "content": prompt}
+        ],
         max_tokens=max_tokens,
-        n=1,
-        stop=stop,
-        timeout=30,
+        temperature=temperature
     )
-    print(f"Received response from OpenAI: {response.choices[0].text.strip()}")
-    return trim_text(response.choices[0].text.strip())
+    output = completion.choices[0].message['content']
+    print(f"Received response from OpenAI: {output}")
+    return trim_text(output)
 
 def process_opinion(opinion: str, processing_count: int) -> str:
     mod_value = processing_count % 7
     if mod_value == 0:
-        prompt = "<s>[INST] Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion. Output one detailed sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add very specific, comedically hyperbolic detail to hyperbolically justify the opinion in absurdly extreme way. Output only sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 1:
-        prompt = "<s>[INST] Add very specific hyperbolic detail to foolishly deny the opinion. Output one detailed sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add very specific hyperbolic extremely awkward detail to foolishly deny the opinion. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 2:
-        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically and ironically with a hyper-specific detail. Output only one short sentenc. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 3:
-        prompt = "<s>[INST] INSTRUCTIONS: take the opposite of the opinion and justify it hyperbolically ironically with a specific detail or two in one detailed sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Make the opinion funnier (in a late-night comedy club kind of way) in one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 4:
-        prompt = "<s>[INST] Take the opinion and make it rationally justified with a specific persuasive and funny example. Output one entence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Take the opinion and make it rationally justified with a specific persuasive and hilarious example. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 5:
-        prompt = "<s>[INST] Repeat the opinion with more detail. Output one detailed sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Give a relatable example of the opinion. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
     elif mod_value == 6:
-        prompt = "<s>[INST] Add extreme detail to the opinion and include no punctuation. OPINION: " + opinion + "\nOUTPUT: [/INST]"
+        prompt = "<s>[INST] Add extreme detail to the opinion and include no punctuation. Output only one short sentence. OPINION: " + opinion + "\nOUTPUT: [/INST]"
 
     url = "https://api.together.xyz/inference"
     payload = {
@@ -80,7 +79,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         "prompt": prompt,
         "max_tokens": 140,
         "stop": ["##","[/INST]","</s>","###","#"],
-        "temperature": 0.9,
+        "temperature": 0.8,
         "top_p": 0.7,
         "top_k": 50,
         "repetition_penalty": 1
@@ -122,16 +121,35 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM") -> str:
-    output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
-    output = trim_text(output)  # Trim the output text
+def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", temperature: float = 0.72) -> str:
+    completion = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": "this AI writes hilarious satirical headlines, and don't shy away from shock comedy and ruffling feathers"},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=120,
+        temperature=temperature
+    )
+    output = completion.choices[0].message.content
+    output = trim_text(output)
     plagiarism_results = check_plagiarism([output], spreadsheet_data)
     
     if not plagiarism_results:
         return output
     else:
-        output = generate_text(prompt, engine=engine, max_tokens=120, stop=["##","!","<","#"])
-        output = trim_text(output)  # Trim the output text again
+        # Retry generation with the same prompt
+        completion = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=120,
+            temperature=temperature
+        )
+        output = completion.choices[0].message['content']
+        output = trim_text(output)
         plagiarism_results = check_plagiarism([output], spreadsheet_data)
         
         if not plagiarism_results:
@@ -140,10 +158,11 @@ def check_and_retry(prompt: str, engine="ft:davinci-002:ai100::8ciHX6XM") -> str
     return None
 
 
+
 def moderate_content(text: str) -> Tuple[bool, dict]:
-    moderation_response = openai.Moderation.create(input=text)
-    output = moderation_response["results"][0]
-    flagged = output.get("flagged")
+    response = client.moderations.create(input=text)
+    output = response.results[0]
+    flagged = output.flagged
     return flagged, output
 
 # Load spreadsheet data
@@ -162,45 +181,49 @@ def home():
 def generate_article():
     try:
         request_data = request.get_json()
-        if 'opinion' not in request_data:
-            return jsonify({'error': 'Invalid request. opinion is missing.'}), 400
-
         if 'headline' not in request_data:
             return jsonify({'error': 'Invalid request. headline is missing.'}), 400
 
-        opinion = request_data['opinion']
         headline = request_data['headline']
-        
-        # New step to process the opinion with Prompt A or B
-        processed_opinion, _ = process_opinion(opinion, 1)  # Unpacking the tuple to get just the text
-        new_prompt = f" {processed_opinion} -> {headline} ###Add Article:"
-        print(f"Generating with prompt: {new_prompt}")  # Print statement before sending the prompt
-    
-        # Generate the article
-        new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##"])
-        print(f"Received article: {new_result}")  # Print statement after receiving the response
 
-        flagged, moderation_output = moderate_content(new_result)
-    
-        if not flagged:
-            print(f"\nGenerated article:")
-            print("jh" , new_result)
-        else:
-            # Rerun the article generation if it's flagged
-            new_result = generate_text(new_prompt, engine="davinci:ft-ai100-2023-10-11-07-16-59", max_tokens=400, stop=["!Article Complete","!E","###","##"])
-            flagged, moderation_output = moderate_content(new_result)
-            if not flagged:
-                print(f"\nArticle Generated")
-                print("jh" , new_result)
-            else:
-                print(f"\nThe final article output has been flagged by the moderation model twice. Please try again or use a different prompt.")
+        mistral_prompt = f"<s>[INST] Write a satirical news article in the style of The Onion, The Daily Mash, and Monty Python for the following headline. You must maintain a professional news tone throughout (playing it straight like any good comedian). Think of how Monty Python sketch would play it straight, taking completely seriously all of the really absurd things that happened in it. Use techniques such as exaggeration, irony, shock, benign violation, surprise etc. Be eager to violate societal norms and taboos in shocking ways. Make it 3 paragraphs. After each paragraph add '<BR><BR>'. When the article is complete write: '!ARTICLE COMPLETE!'. Headline:  {headline}. OUTPUT ARTICLE: [/INST]"
 
-        if not new_result:
-            return jsonify({'status': True,'article': new_result, 'prompt':new_prompt}), 400
+        url = "https://api.together.xyz/inference"
+        payload = {
+            "model": "mistralai/Mistral-7B-Instruct-v0.1",
+            "prompt": mistral_prompt,
+            "max_tokens": 600,  # Increased for a longer article
+            "stop": ["!ARTICLE","</s>"],  # Adjusted stopping condition for article
+            "temperature": 0.8,
+            "top_p": 0.9,
+            "top_k": 70,
+            "repetition_penalty": 1.2
+        }
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "Authorization": f"Bearer {together.api_key}"
+        }
+
+        print(f"Sending prompt to together.ai: {mistral_prompt}")
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        response_json = response.json()
+
+        if 'output' in response_json and 'choices' in response_json['output'] and len(response_json['output']['choices']) > 0:
+            article = trim_text(response_json['output']['choices'][0]['text'].strip())
+            return jsonify({'status': True, 'article': article}), 200
         else:
-            return jsonify({'status': True,'article': new_result, 'prompt':new_prompt}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+            print("Unexpected response format or 'choices' not in response.")
+            return jsonify({'error': 'Article generation failed. Unexpected response format.'}), 500
+
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+        return jsonify({'error': str(http_err)}), 500
+    
+    except Exception as err:
+        print(f"An error occurred: {err}")
+        return jsonify({'error': str(err)}), 500
 
 @app.route('/generate_headline', methods=['POST'])
 def generate_headline():
@@ -212,18 +235,15 @@ def generate_headline():
         opinion = request_data['opinion']
         
         # New step to process the opinion with Prompt A or B
-        processed_opinion = process_opinion(opinion, 1)  # Adjust the count as needed
-        prompt = f"{processed_opinion} "
-        print(f"Generating with prompt: {prompt}")  # Print statement before sending the prompt
-
+        processed_opinion = process_opinion(opinion, 1)
         final_outputs = []
 
         for i in range(7):
-            processed_opinion, _ = process_opinion(opinion, i)  # Unpack the tuple to get the string
-            processed_opinion = processed_opinion.lower()  # Now it's clear that processed_opinion is a string
+            processed_opinion, _ = process_opinion(opinion, i)
+            processed_opinion = processed_opinion.lower()
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, engine="ft:davinci-002:ai100::8ciHX6XM")
-            print(f"Received headline: {result}")  # Print statement after receiving the response
+            result = check_and_retry(prompt, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9")  # Updated to match new client usage
+            print(f"Received headline: {result}")
 
             if result:
                 flagged, moderation_output = moderate_content(result)
@@ -238,6 +258,7 @@ def generate_headline():
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)}), 500
+
 
 application = app
 

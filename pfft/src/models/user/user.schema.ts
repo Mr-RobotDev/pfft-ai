@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import { Schema } from 'mongoose';
 import validator from 'validator';
 
@@ -6,8 +5,10 @@ import { comparePassword } from '@models/user/user.methods';
 import { findOneOrCreate } from '@models/user/user.static';
 import type { IUserSchema } from '@models/user/user.types';
 
+const bcrypt = require('bcrypt');
+
 const userSchema = new Schema<IUserSchema>({
-  
+
   email: {
     type: String,
     required: false,
@@ -19,18 +20,29 @@ const userSchema = new Schema<IUserSchema>({
     type: String,
     required: true,
   },
-  
+
   username: {
     type: String,
     required: true,
     unique: true,
   },
+
   password: {
     type: String,
     required: [true, 'Please enter your password'],
     minLength: [6, 'Your password must be at least 6 characters long'],
     select: false,
   },
+
+  verificationToken: {
+    type: String,
+    required: false
+  },
+
+  isVerified: {
+    type: Boolean,
+    required: false
+  }
 
 });
 

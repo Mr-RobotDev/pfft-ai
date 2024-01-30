@@ -5,6 +5,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   userType: string;
+  verificationToken: string;
+  isVerified: boolean;
 }
 
 export interface IUserSchema extends Document {
@@ -24,6 +26,8 @@ export interface IUserSchema extends Document {
     required: boolean;
     unique: [boolean, string];
   };
+  verificationToken: string,
+  isVerified: boolean
 }
 
 export interface IUserDocument extends IUser{}

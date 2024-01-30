@@ -58,9 +58,10 @@ export default NextAuth({
         // @ts-ignore
         const result = await User.findOne({
           username: credentials.username,
+          isVerified: true
         }).select("+password");
         if (!result) {
-          throw new Error("No user Found with UserName Please Sign Up...!");
+          throw new Error("No user Found with UserName or Not Verified...!");
         }
 
         // compare()
