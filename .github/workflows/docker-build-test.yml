@@ -1,0 +1,15 @@
+name: "CI"
+on:
+  pull_request:
+  push:
+    branches:
+      - docker-compose-test
+
+jobs:
+  tests:
+    name: "Integration testing"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Set up environment"
+        run: docker compose -f docker-compose.yml up -d

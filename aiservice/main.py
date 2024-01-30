@@ -5,9 +5,10 @@ import openai as OpenAI
 import pandas as pd
 from typing import List, Tuple, Optional
 from dotenv import load_dotenv
-import os
+import os, sys
 import together
 import requests
+from flask_cors import CORS
 
 def trim_text(text: str) -> str:
     return ' '.join(text.split())
@@ -262,4 +263,5 @@ def generate_headline():
 application = app
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=105)
+    debug = "--debug" in sys.argv
+    app.run(host='localhost', port=105, debug=debug)
