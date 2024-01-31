@@ -1,10 +1,10 @@
-import bcrypt from 'bcryptjs';
 import { Schema } from 'mongoose';
 import validator from 'validator';
 
 import { comparePassword } from '@models/user/user.methods';
 import { findOneOrCreate } from '@models/user/user.static';
 import type { IUserSchema } from '@models/user/user.types';
+import bcrypt from 'bcryptjs';
 
 
 const userSchema = new Schema<IUserSchema>({
