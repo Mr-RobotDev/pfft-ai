@@ -174,6 +174,7 @@ spreadsheet_data = df["text"].tolist()
 df_blocked_words = pd.read_csv("blocked_words.csv", encoding='utf-8', delimiter='\t')
 blocked_words = df_blocked_words["word"].tolist()
 
+# Project Routes
 @app.route("/")
 def home():
     return jsonify({'status': True}), 200
