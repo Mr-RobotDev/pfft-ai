@@ -121,13 +121,14 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", temperature: float = 0.72) -> str:
+def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", temperature: float = 0.72, stop=["#"]) -> str:
     completion = client.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": "this AI writes hilarious satirical headlines, and don't shy away from shock comedy and ruffling feathers"},
             {"role": "user", "content": prompt}
         ],
+        stop=stop,
         max_tokens=120,
         temperature=temperature
     )
