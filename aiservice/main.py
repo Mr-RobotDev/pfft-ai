@@ -146,8 +146,7 @@ def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", 
                 {"role": "user", "content": prompt}
             ],
             max_tokens=120,
-            temperature=temperature,
-            stop=["###","##"]
+            temperature=temperature
         )
         output = completion.choices[0].message['content']
         output = trim_text(output)
