@@ -42,7 +42,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, model="gpt-4.0-turbo", max_tokens: int = 124, temperature: float = 0.72) -> str:
+def generate_text(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", max_tokens: int = 124, temperature: float = 0.72) -> str:
     completion = client.chat.completions.create(
         model=model,
         messages=[
