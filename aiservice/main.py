@@ -42,7 +42,7 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, model="gpt-4-0125-preview", max_tokens: int = 124, temperature: float = 0.72) -> str:
+def generate_text(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", max_tokens: int = 124, temperature: float = 0.72) -> str:
     completion = client.chat.completions.create(
         model=model,
         messages=[
@@ -121,7 +121,7 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, model="gpt-4-0125-preview", temperature: float = 0.72, stop=["#"]) -> str:
+def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", temperature: float = 0.72, stop=["#"]) -> str:
     completion = client.chat.completions.create(
         model=model,
         messages=[
@@ -244,7 +244,7 @@ def generate_headline():
             processed_opinion, _ = process_opinion(opinion, i)
             processed_opinion = processed_opinion.lower()
             prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, model="gpt-4-0125-preview")  # Updated to match new client usage
+            result = check_and_retry(prompt, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9")  # Updated to match new client usage
             print(f"Received headline: {result}")
 
             if result:
