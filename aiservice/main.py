@@ -228,39 +228,61 @@ def generate_article():
         print(f"An error occurred: {err}")
         return jsonify({'error': str(err)}), 500
 
-@app.route('/generate_headline', methods=['POST'])
-def generate_headline():
-    try:
-        request_data = request.get_json()
-        if 'opinion' not in request_data:
-            return jsonify({'error': 'Invalid request. opinion is missing.'}), 400
+@app.route('/generate_article', methods=['POST'])
+def generate_article():
+    max_retries = 5  # Set the maximum number of retries
+    retries = 0
+    while retries < max_retries:
+        try:
+            request_data = request.get_json()
+            if 'headline' not in request_data:
+                return jsonify({'error': 'Invalid request. headline is missing.'}), 400
 
-        opinion = request_data['opinion']
-        
-        # New step to process the opinion with Prompt A or B
-        processed_opinion = process_opinion(opinion, 1)
-        final_outputs = []
+            headline = request_data['headline']
 
-        for i in range(7):
-            processed_opinion, _ = process_opinion(opinion, i)
-            processed_opinion = processed_opinion.lower()
-            prompt = f"{processed_opinion} ->"
-            result = check_and_retry(prompt, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9")  # Updated to match new client usage
-            print(f"Received headline: {result}")
+            mistral_prompt = f"<s>[INST] Write a satirical news article in the style of The Onion, The Daily Mash, and Monty Python for the following headline. You must maintain a professional news tone throughout (playing it straight like any good comedian). Think of how Monty Python sketch would play it straight, taking completely seriously all of the really absurd things that happened in it. Use techniques such as exaggeration, irony, shock, benign violation, surprise etc. Be eager to violate societal norms and taboos in shocking ways. Make it 3 paragraphs. After each paragraph add '<BR><BR>'. When the article is complete write: '!ARTICLE COMPLETE!'. Headline:  {headline}. OUTPUT ARTICLE: [/INST]"
 
-            if result:
-                flagged, moderation_output = moderate_content(result)
-                if not flagged:
-                    if not contains_blocked_words(result, blocked_words):
-                        final_outputs.append(result)              
-        
-        if not final_outputs:
-            return jsonify({'status': True, 'headlines': final_outputs, 'prompt':prompt}), 400
-        else:
-            return jsonify({'status': True, 'headlines': final_outputs ,'prompt':prompt}), 200
-    except Exception as e:
-        print(e)
-        return jsonify({'error': str(e)}), 500
+            url = "https://api.together.xyz/inference"
+            payload = {
+                "model": "mistralai/Mistral-7B-Instruct-v0.1",
+                "prompt": mistral_prompt,
+                "max_tokens": 600,  # Increased for a longer article
+                "stop": ["!ARTICLE","</s>"],  # Adjusted stopping condition for article
+                "temperature": 0.8,
+                "top_p": 0.9,
+                "top_k": 70,
+                "repetition_penalty": 1.2
+            }
+            headers = {
+                "accept": "application/json",
+                "content-type": "application/json",
+                "Authorization": f"Bearer {together.api_key}"
+            }
+
+            print(f"Sending prompt to together.ai: {mistral_prompt}")
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()  # This line will now trigger the retry logic in case of HTTP errors
+            response_json = response.json()
+
+            if 'output' in response_json and 'choices' in response_json['output'] and len(response_json['output']['choices']) > 0:
+                article = trim_text(response_json['output']['choices'][0]['text'].strip())
+                return jsonify({'status': True, 'article': article}), 200
+            else:
+                print("Unexpected response format or 'choices' not in response.")
+                return jsonify({'error': 'Article generation failed. Unexpected response format.'}), 500
+
+        except requests.exceptions.HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err}. Retry {retries + 1}/{max_retries}")
+            retries += 1  # Increment the retry counter
+            if retries >= max_retries:
+                return jsonify({'error': 'Article generation failed after multiple attempts.'}), 500
+            continue  # Continue to the next iteration of the loop for a retry
+    
+        except Exception as err:
+            print(f"An error occurred: {err}")
+            return jsonify({'error': str(err)}), 500
+        break  # Break out of the loop if successful
+
 
 
 application = app
