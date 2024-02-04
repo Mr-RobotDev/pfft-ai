@@ -189,7 +189,7 @@ def generate_article():
 
         headline = request_data['headline']
 
-        mistral_prompt = f"<s>[INST] Write a satirical news article in the style of The Onion, The Daily Mash, and Monty Python for the following headline. You must maintain a professional news tone throughout (playing it straight like any good comedian). Think of how Monty Python sketch would play it straight, taking completely seriously all of the really absurd things that happened in it. Use techniques such as exaggeration, irony, shock, benign violation, surprise etc. Be eager to violate societal norms and taboos in shocking ways. Make it 3 paragraphs. After each paragraph add '<BR><BR>'. When the article is complete write: '!ARTICLE COMPLETE!'. Headline:  {headline}. OUTPUT ARTICLE: [/INST]"
+        mistral_prompt = f"<s>[INST] Write a satirical news article in the style of The Onion, The Daily Mash, and Monty Python for the following headline. You must maintain a professional news tone throughout (playing it straight like any good comedian). Think of how Monty Python sketch would play it straight, taking completely seriously all of the really absurd things that happened in it. Use techniques such as exaggeration, irony, shock, benign violation, surprise etc. Be eager to violate societal norms and taboos in shocking ways. Make it 3 paragraphs. After each paragraph add '<BR><BR>'. When the article is complete write: '!ARTICLE COMPLETE!'. Headline:  {headline}. OUTPUT ARTICLE (do NOT repeat headline): [/INST]"
 
         url = "https://api.together.xyz/inference"
         payload = {
