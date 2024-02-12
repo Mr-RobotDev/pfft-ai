@@ -18,7 +18,7 @@ jobs:
       with:
         envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-        envkey_TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}        
+        envkey_TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
         directory: aiservice
         file_name: .env
     - name: Create Dotenv File for NextJS
@@ -48,7 +48,7 @@ jobs:
         directory: pfft
         file_name: .env.local
     - name: Add execution permission to shell scripts
-      run: chmod +x ./.platform/hooks/predeploy/01_clean.sh
+      run: chmod +x ./.platform/hooks/predeploy/*.sh
     - name: Generate deployment package
       run: zip -r deploy.zip . -x '*.git*'
     - name: Deploy to EB
