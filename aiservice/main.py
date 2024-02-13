@@ -228,43 +228,40 @@ def generate_article():
         print(f"An error occurred: {err}")
         return jsonify({'error': str(err)}), 500
 
-@app.route('/generate_article', methods=['POST'])
-def generate_article():
+@app.route('/generate_headline', methods=['POST'])
+def generate_headline():
     try:
         request_data = request.get_json()
-        if 'headline' not in request_data:
-            return jsonify({'error': 'Invalid request. headline is missing.'}), 400
+        if 'opinion' not in request_data:
+            return jsonify({'error': 'Invalid request. opinion is missing.'}), 400
 
-        headline = request_data['headline']
+        opinion = request_data['opinion']
+        
+        # New step to process the opinion with Prompt A or B
+        processed_opinion = process_opinion(opinion, 1)
+        final_outputs = []
 
-        # Formulate the prompt for generating the satirical article
-        prompt = f"Write a detailed, satirical news article based on the headline: '{headline}'. The article should be humorous, in the style of The Onion or Monty Python, containing three paragraphs. Each paragraph should elaborate on the headline with exaggeration, irony, and a professional tone, as seen in traditional news outlets."
+        for i in range(7):
+            processed_opinion, _ = process_opinion(opinion, i)
+            processed_opinion = processed_opinion.lower()
+            prompt = f"{processed_opinion} ->"
+            result = check_and_retry(prompt, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9")  # Updated to match new client usage
+            print(f"Received headline: {result}")
 
-        # Using the OpenAI API for generating the article
-        completion = client.chat.completions.create(
-            model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9",
-            messages=[
-                {"role": "system", "content": "You are a highly skilled AI trained to write satirical news articles."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=1024,
-            temperature=0.7,
-            stop=["!ARTICLE COMPLETE!"]
-        )
-
-        if completion.choices and len(completion.choices) > 0:
-            article = completion.choices[0].message['content'].strip()
-            return jsonify({'status': True, 'article': article}), 200
+            if result:
+                flagged, moderation_output = moderate_content(result)
+                if not flagged:
+                    if not contains_blocked_words(result, blocked_words):
+                        final_outputs.append(result)              
+        
+        if not final_outputs:
+            return jsonify({'status': True, 'headlines': final_outputs, 'prompt':prompt}), 400
         else:
-            return jsonify({'error': 'Article generation failed. Unexpected response format.'}), 500
+            return jsonify({'status': True, 'headlines': final_outputs ,'prompt':prompt}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': str(e)}), 500
 
-    except requests.exceptions.HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-        return jsonify({'error': str(http_err)}), 500
-    
-    except Exception as err:
-        print(f"An error occurred: {err}")
-        return jsonify({'error': str(err)}), 500
 
 application = app
 
