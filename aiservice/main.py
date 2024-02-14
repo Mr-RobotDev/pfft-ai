@@ -189,34 +189,31 @@ def generate_article():
 
         headline = request_data['headline']
 
-        prompt = f"{headline} ###Add Article:"
+        # Using the format from the original example for the ChatGPT API call
+        prompt = f"Write a satirical news article in the style of The Onion, The Daily Mash, and Monty Python for the following headline: {headline}. Maintain a professional news tone throughout, using exaggeration, irony, shock, benign violation, surprise etc. The article should be 3 paragraphs long, with '<BR><BR>' after each paragraph. Headline: {headline}."
 
         completion = client.chat.completions.create(
-            model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9",
+            model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9",  # Keeping the model consistent with the original code
             messages=[
-                {"role": "system", "content": "this AI writes hilarious satirical headlines"},
+                {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=1024,
-            temperature=0.7,
-            stop=["!Article"]
+            max_tokens=1024,  # Adjust as needed for article length
+            temperature=0.7,  # Adjust for creativity
+            stop=["<BR><BR><BR>"]  # Custom stop sequence for article separation
         )
 
         if completion.choices and len(completion.choices) > 0:
-            article = trim_text(completion.choices[0].message.content.strip())
+            # Assuming 'text' is the correct attribute based on the API version you're using
+            article = trim_text(completion.choices[0].text.strip())
             return jsonify({'status': True, 'article': article}), 200
+
         else:
             return jsonify({'error': 'Article generation failed. No output from OpenAI.'}), 500
-    except Exception as err:
-        print(f"An error occurred: {err}")
-        return jsonify({'error': str(err)}), 500
-
-        
 
     except Exception as err:
         print(f"An error occurred: {err}")
         return jsonify({'error': str(err)}), 500
-
 
 @app.route('/generate_headline', methods=['POST'])
 def generate_headline():
