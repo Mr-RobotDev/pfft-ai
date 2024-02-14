@@ -231,16 +231,16 @@ const ArticleGenerated: FC = () => {
 
           {/* Article Generated */}
           <div
-            className="col-span-5 md:col-span-3 
-          lg:text-left lg:px-1
+            className="col-span-5 md:col-span-4 lg:col-span-3
+          lg:text-left lg:px-4
           xl:px-[10rem]
           slg:px-[10rem] slg:pb-5 slg:text-left
-          md:px-10 md:pb-7 md:pt-3 md:text-left
+          md:px-8 md:pb-7 md:pt-3 md:text-left
           xms:px-5 xms:pb-5 xms:text-center
           xs:px-5 xs:pb-5 xs:text-center
           text-center px-4"
           >
-            <h1 className="article-header font-bold font-copperplate mb-6 text-black-100 mx-4 md:mx-8">
+            <h1 className="article-header font-bold font-copperplate mb-6 text-black-100">
               {headline}
             </h1>
             <div className="md:flex-row items-center sm:flex flex-row text-center ">
@@ -265,12 +265,12 @@ const ArticleGenerated: FC = () => {
                 <PulseLoader color="orange" size={20} />
               </div>
             ) : (
-              <div className="font-courierPrime mt-10 text-[22px] mx-4 md:mx-8">
+              <div className="font-courierPrime mt-10 text-[22px]">
                 {segments?.map((segment, index) => {
                   return (
-                    <p key={index} className="mb-2">
-                      {segment}
-                    </p>
+                    <div key={index} className="mb-2 article-container" dangerouslySetInnerHTML={{
+                      __html: segment
+                    }} />
                   );
                 })}
               </div>
