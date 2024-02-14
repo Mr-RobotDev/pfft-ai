@@ -204,12 +204,11 @@ def generate_article():
         )
 
         if completion.choices and len(completion.choices) > 0:
-            # Assuming 'text' is the correct attribute based on the API version you're using
-            article = trim_text(completion.choices[0].text.strip())
+            article = trim_text(completion.choices[0]['message']['content'].strip())
             return jsonify({'status': True, 'article': article}), 200
-
         else:
             return jsonify({'error': 'Article generation failed. No output from OpenAI.'}), 500
+        
 
     except Exception as err:
         print(f"An error occurred: {err}")
