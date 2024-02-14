@@ -42,12 +42,12 @@ def contains_blocked_words(text: str, blocked_words_list: List[str]) -> bool:
             return True
     return False
 
-def generate_text(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", max_tokens: int = 124, temperature: float = 0.80, stop=["#"]) -> str:
+def generate_text(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", max_tokens: int = 124, temperature: float = 0.77, stop=["#"]) -> str:
     completion = client.chat.completions.create(
         model=model,
         stop=stop,
         messages=[
-            {"role": "system", "content": "this AI writes hilarious satirical headlines, and don't shy away from shock comedy and ruffling feathers"},
+            {"role": "system", "content": "this AI writes hilarious satirical headlines"},
             {"role": "user", "content": prompt}
         ],
         max_tokens=max_tokens,
@@ -122,11 +122,11 @@ def process_opinion(opinion: str, processing_count: int) -> str:
         return "", {"error": str(err)}  # Returns an empty string and the error information
 
 
-def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", temperature: float = 0.72, stop=["#"]) -> str:
+def check_and_retry(prompt: str, model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9", temperature: float = 0.75, stop=["#"]) -> str:
     completion = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": "this AI writes hilarious satirical headlines, and don't shy away from shock comedy and ruffling feathers"},
+            {"role": "system", "content": "this AI writes hilarious satirical headlines"},
             {"role": "user", "content": prompt}
         ],
         stop=stop,
@@ -189,12 +189,12 @@ def generate_article():
 
         headline = request_data['headline']
 
-        prompt = f"Write a satirical news article in the style of The Onion, The Daily Mash, and Monty Python for the following headline: {headline}. Maintain a professional news tone throughout, using exaggeration, irony, shock, benign violation, surprise etc. The article should be 3 paragraphs long, with '<BR><BR>' after each paragraph. Headline: {headline}."
+        prompt = f"{headline} ###Add Article:"
 
         completion = client.chat.completions.create(
             model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": "this AI writes hilarious satirical headlines"},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=1024,
