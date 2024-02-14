@@ -231,15 +231,14 @@ const ArticleGenerated: FC = () => {
 
           {/* Article Generated */}
           <div
-            className="col-span-3 
+            className="col-span-5 md:col-span-3 
           lg:text-left lg:px-1
           xl:px-[10rem]
           slg:px-[10rem] slg:pb-5 slg:text-left
           md:px-10 md:pb-7 md:pt-3 md:text-left
           xms:px-5 xms:pb-5 xms:text-center
           xs:px-5 xs:pb-5 xs:text-center
-          text-center px-4
-          "
+          text-center px-4"
           >
             <h1 className="article-header font-bold font-copperplate mb-6 text-black-100">
               {headline}
