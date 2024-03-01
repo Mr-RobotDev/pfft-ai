@@ -189,7 +189,7 @@ def generate_article():
 
         headline = request_data['headline']
 
-        prompt = f"Write a satirical news article in the style of The Onion, The Daily Mash, and Monty Python for the following headline: {headline}. Maintain a professional news tone throughout, using exaggeration, irony, shock, benign violation, surprise etc. The article should be 3 paragraphs long, with '<BR><BR>' after each paragraph. Headline: {headline}."
+        prompt = f"Write a satirical news article in the style of The Onion, The Daily Mash, and Monty Python for the following headline: {headline}. Maintain a professional news tone throughout, using exaggeration, irony, shock, benign violation, surprise etc. The article should be 3 paragraphs long, with '<BR><BR>' after each paragraph. Maintain a serious tone but the details that are being reported should be hyperbolicly exaggerated. Headline: {headline}."
 
         completion = client.chat.completions.create(
             model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9",
