@@ -238,6 +238,7 @@ const ArticleGenerated: FC = () => {
           xms:px-5 xms:pb-5 xms:text-center
           xs:px-5 xs:pb-5 xs:text-center
           text-center px-4"
+          style="max-width: 1024px; margin: auto;"
           >
             <h1 className="article-header font-bold font-copperplate mb-6 text-black-100">
               {headline}
