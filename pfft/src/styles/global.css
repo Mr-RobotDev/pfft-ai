@@ -102,6 +102,11 @@ form {
   margin-bottom: 0px;
 }
 
+.max-width-center {
+  max-width: 1024px; 
+  margin: auto;
+}
+
 @media (min-width: 280px) {
   .ticker-module_tickerText__ryjAR {
     font-size: 13px !important;
