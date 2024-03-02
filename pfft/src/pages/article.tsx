@@ -231,7 +231,7 @@ const ArticleGenerated: FC = () => {
 
           {/* Article Generated */}
           <div
-            className="col-span-5 md:col-span-4 lg:col-span-3
+            className="col-span-5 md:col-span-3 lg:col-span-3
           lg:text-left lg:px-4
           xl:px-[10rem]
           slg:px-[10rem] slg:pb-5 slg:text-left
