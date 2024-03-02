@@ -104,7 +104,8 @@ form {
 
 .max-width-center {
   max-width: 1024px; 
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (min-width: 280px) {
