@@ -51,7 +51,7 @@ const GeneratingHeadlines: FC = () => {
       if (pffting) pffting = JSON.parse(pffting);
       if (!pffting) {
         localStorage.setItem("pffting", JSON.stringify({ ip, count: 1, id : nanoid(12) }));
-      } else if (pffting.count >= 5) {
+      } else if (pffting.count >= 100) {
         setIsLoading(false);
         showToast(
           <div>
