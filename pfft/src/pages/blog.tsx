@@ -57,7 +57,8 @@ const Blog: FC = () => {
 
   return (
     <Main meta={<Meta title="Blog" description="Blog" />}>
-      <div className="xms:mx-16 mx-12 slg:mx-12 max-width-center">
+      <div className="xms:mx-16 mx-12 slg:mx-12">
+        <div className="max-width-center">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <PulseLoader color="orange" size={20} />
@@ -95,6 +96,7 @@ const Blog: FC = () => {
             </div>
           </>
         )}
+        </div>
       </div>
     </Main>
   );
