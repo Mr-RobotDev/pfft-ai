@@ -37,18 +37,18 @@ async function createUser(req: NextApiRequest, res: NextApiResponse) {
 
       const user = await UserModel.findOne({ email: req.body.email });
 
-      const verificationToken = generateVerificationToken();
-      const hashedToken = await hashToken(verificationToken);
+      // const verificationToken = generateVerificationToken();
+      // const hashedToken = await hashToken(verificationToken);
 
-      if (user != null) {
-        user.verificationToken = hashedToken;
-        user.isVerified = false;
-        await user.save();
-      }
+      // if (user != null) {
+      //   user.verificationToken = hashedToken;
+      //   user.isVerified = false;
+      //  await user.save();
+      // }
 
-      const verificationLink = `https://pfft.ai/verify/${hashedToken}`;
+      // const verificationLink = `https://pfft.ai/verify/${hashedToken}`;
 
-      sendVerificationEmail(newUser, verificationLink);
+      // sendVerificationEmail(newUser, verificationLink);
 
       /*const paymentRecord = new PaymentRecord({
         user_id: new mongoose.Types.ObjectId(newUser._id),
