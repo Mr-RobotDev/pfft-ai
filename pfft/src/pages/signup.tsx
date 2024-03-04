@@ -278,6 +278,7 @@ export default function Signup() {
                       ? "animate__animated animate__shakeX"
                       : ""
               }`}
+              style={{ display: 'none' }}
           >
             <input
                 type="username"
@@ -309,6 +310,7 @@ export default function Signup() {
                       ? "animate__animated animate__shakeX"
                       : ""
               }`}
+              style={{ display: 'none' }}
           >
             <input
                 type="email"
@@ -341,6 +343,7 @@ export default function Signup() {
                       ? "animate__animated animate__shakeX"
                       : ""
               }`}
+              style={{ display: 'none' }}
           >
             <input
                 type={showPassword ? "text" : "password"}
@@ -392,6 +395,7 @@ export default function Signup() {
             )}
           </div>
           <div className="mt-2 mb-4 flex flex-col ">
+          <div style={{ display: 'none' }}>
             <button
                 className="text-center
                     mt-5 rounded-3xl bg-gradient-to-r from-orange-100 to-orange-200  sm:py-4 px-[72px] text-slate-50 font-courier-prime text-lg sm:text-2xl py-4
@@ -403,7 +407,8 @@ export default function Signup() {
                 }
             >
               Register to pfft
-            </button>
+              </button>
+            </div>
             <p className="text-center font-courierPrime mt-8 sm:text-lg text-xl font-bold ">
               Already have an account?{" "}
               <Link
