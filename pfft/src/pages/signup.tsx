@@ -379,7 +379,7 @@ export default function Signup() {
                     {formik.errors.password}
                   </span>
           )}
-          <div className="flex flex-col justify-center items-center mt-5 mb-4" >
+          <div className="flex flex-col justify-center items-center mt-5 mb-4" style={{ display: 'none' }}>
             <ReCAPTCHA
                 ref={recaptchaRef}
                 sitekey={
@@ -409,31 +409,6 @@ export default function Signup() {
               Register to pfft
               </button>
             </div>
-            <p className="text-center font-courierPrime mt-8 sm:text-lg text-xl font-bold ">
-              Already have an account?{" "}
-              <Link
-                  className="
-                      text-orange-200 font-courierPrime hover:border-red-500 font-bold text-xl
-                      md:text-xl "
-                  style={{ textDecoration: "none" }}
-                  href="/signin"
-              >
-                Log in
-              </Link>
-            </p>
-            <div
-                className="
-                  flex justify-center mt-7 space-x-9"
-            >
-              <div className="w-full h-5">
-                <Image
-                    alt="divider"
-                    src="/assets/images/divider.svg"
-                    width={1000}
-                    height={220}
-                />
-              </div>
-            </div>
             <div
                 className="
                   mx-auto mt-4 flex pl-3 items-center justify-center rounded-md p-2 border border-solid border-orange-300"
@@ -456,6 +431,31 @@ export default function Signup() {
                 Signup with Google
               </button>
             </div>
+            <div
+                className="
+                  flex justify-center mt-7 space-x-9"
+            >
+              <div className="w-full h-5">
+                <Image
+                    alt="divider"
+                    src="/assets/images/divider.svg"
+                    width={1000}
+                    height={220}
+                />
+              </div>
+            </div>
+            <p className="text-center font-courierPrime mt-8 sm:text-lg text-xl font-bold ">
+              Already have an account?{" "}
+              <Link
+                  className="
+                      text-orange-200 font-courierPrime hover:border-red-500 font-bold text-xl
+                      md:text-xl "
+                  style={{ textDecoration: "none" }}
+                  href="/signin"
+              >
+                Log in
+              </Link>
+            </p>
           </div>
         </>
     );
