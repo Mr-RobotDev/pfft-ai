@@ -143,7 +143,7 @@ const ArticleGenerated: FC = () => {
                       JSON.stringify({ ip, count: 1 })
                     );
                     generateArticle();
-                  } else if (pffting.count >= 5) {
+                  } else if (pffting.count >= 75) {
                     showToast(
                       <div>
                         <div>Create an account to continue for free.</div>
