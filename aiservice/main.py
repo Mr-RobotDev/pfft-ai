@@ -194,7 +194,7 @@ def generate_article():
         completion = client.chat.completions.create(
             model="ft:gpt-3.5-turbo-0613:ai100::855YmvE9",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": "This AI writes satirical articles that uses exaggerated details but always maintains formal and serious writing style."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=1024,
