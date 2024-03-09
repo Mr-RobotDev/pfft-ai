@@ -18,12 +18,6 @@ class MyDocument extends Document {
           `}}>
           </Script>
 
-          {/* Google Ads Script */}
-          <Script async strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=AW-11035419488"></Script>
-          <Script strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
-            gtag('config', 'AW-11035419488');
-          `}}>
-          </Script>
         </Head>
         <body>
           <Main />
