@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { FC, useState, useEffect } from "react";
 import PulseLoader from "react-spinners/PulseLoader";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,8 +10,17 @@ import APICaller from "@/lib/API_Caller";
 import { useSession } from "next-auth/react";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import showToast from "@/lib/toast";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { createShortUrl } from "@/utils/helper";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 
 const ArticleGenerated: FC = () => {
   const router = useRouter();
@@ -24,14 +33,16 @@ const ArticleGenerated: FC = () => {
   const [shareURL, setShareURL] = useState("");
   const [showShareIcons, setShowShareIcons] = useState(false);
   const session = useSession().data;
-  const status = useSession().status
+  const status = useSession().status;
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleShareClick = () => {
     setShowShareIcons(!showShareIcons);
   };
 
   useEffect(() => {
-    if(status === "loading" ) return
+    if (status === "loading") return;
     generateArticle();
   }, [session?.user?._id]);
 
@@ -108,8 +119,90 @@ const ArticleGenerated: FC = () => {
       .flatMap((segment) => segment?.split("<br>"));
     setSegments(updatedSegments);
   }, [article]);
+
+  const onDeleteArticle = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogConfirm = async () => {
+    setIsLoading(true); // Start loading
+    try {
+      const res = await fetch(
+        `/api/deleteArticle?userID=${session?.user?._id}&blogID=${blogID}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Article successfully deleted!");
+        setTimeout(() => {
+          router.push("/");
+        }, 3000);
+      } else {
+        toast.error(
+          (data as Error).message ||
+            "Failed to delete the article. Please try again."
+        );
+      }
+    } catch (error) {
+      toast.error("Failed to delete the article. Please try again.");
+    } finally {
+      setIsLoading(false);
+      setDialogOpen(false);
+    }
+  };
+
   return (
     <>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => !isLoading && setDialogOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" className="font-courierPrime">
+          {"Delete Article"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="alert-dialog-description"
+            className="font-courierPrime"
+          >
+            Are you sure you want to delete this article? This action cannot be
+            undone.
+          </DialogContentText>
+          {isLoading && (
+            <CircularProgress
+              size={24}
+              style={{ display: "block", margin: "20px auto" }}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => !isLoading && setDialogOpen(false)}
+            disabled={isLoading}
+            style={{ borderColor: "#ff8b4b", color: "#ff8b4b" }}
+            className="font-courierPrime"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDialogConfirm}
+            disabled={isLoading}
+            autoFocus
+            variant="contained"
+            style={{ backgroundColor: "#ff8b4b", color: "#FFFFFF" }}
+            className="font-courierPrime"
+          >
+            {isLoading ? "Deleting..." : "Confirm"}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Main meta={<Meta title="Article" description="Article" />}>
         <ToastContainer />
         <div
@@ -181,7 +274,10 @@ const ArticleGenerated: FC = () => {
                     } else {
                       showToast(
                         <div>
-                          <div>Oh no, you are out of free credits! But good news, you can give us money here!</div>
+                          <div>
+                            Oh no, you are out of free credits! But good news,
+                            you can give us money here!
+                          </div>
                           <div className="flex justify-start mt-2">
                             <button
                               onClick={() => {
@@ -209,6 +305,20 @@ const ArticleGenerated: FC = () => {
               text-slate-50 font-courierPrime  hover:bg-orange-300 font-light"
             >
               re-article
+            </button>
+            <button
+              onClick={onDeleteArticle}
+              className="rounded-3xl bg-gradient-to-r from-orange-100 to-orange-200
+              2xl:w-[267px] 2xl:h-[106px] 2xl:mb-[3rem]  2xl:text-[32px]
+              xl:w-[180px] xl:h-[100px] xl:mb-[3rem]  xl:text-[28px]
+              lg:w-[150px] lg:h-[90px] lg:mb-[3rem] lg:text-[24px] lg:font-normal lg:mr-[0rem]
+              md:w-[210px] md:h-[100px] md:text-[32px] md:mr-3 md:mb-0
+              xs:w-[190px] xs:h-[56px]  xs:text-[20px]
+              slg:pr-0 slg:mr-2
+              w-[190px] h-[56px]  mb-[1rem] text-[20px]
+              text-slate-50 font-courierPrime  hover:bg-orange-300 font-light"
+            >
+              del-article
             </button>
             <button
               onClick={() => {
@@ -267,9 +377,13 @@ const ArticleGenerated: FC = () => {
               <div className="font-courierPrime mt-10 text-[22px]">
                 {segments?.map((segment, index) => {
                   return (
-                    <div key={index} className="mb-2 article-container" dangerouslySetInnerHTML={{
-                      __html: segment
-                    }} />
+                    <div
+                      key={index}
+                      className="mb-2 article-container"
+                      dangerouslySetInnerHTML={{
+                        __html: segment,
+                      }}
+                    />
                   );
                 })}
               </div>
@@ -281,10 +395,10 @@ const ArticleGenerated: FC = () => {
           xl:order-3 xl:h-screen xl:justify-center 
           lg:order-3 lg:h-screen lg:justify-center
           slg:order-2  slg:justify-start 
-          order-2  justify-end mb-10" 
+          order-2  justify-end mb-10"
           >
             <div className="relative" style={{ minHeight: "100px" }}>
-              {(
+              {
                 <button
                   className="rounded-3xl bg-gradient-to-r from-orange-100 to-orange-200 mb-7
                 2xl:w-[267px] 2xl:h-[106px]  2xl:text-[32px]
@@ -299,7 +413,7 @@ const ArticleGenerated: FC = () => {
                 >
                   Share
                 </button>
-              )}
+              }
               {showShareIcons && blogID && (
                 <div className="border-2 border-[#FF4738] bg-white rounded-2xl shadow-lg w-full">
                   <ul className="flex justify-around">

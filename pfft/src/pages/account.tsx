@@ -46,6 +46,45 @@ const Account: FC = () => {
   const [subscription, setSubscription] = useState<Subscription | undefined>();
   const [selectedOption, setSelectedOption] = useState<string>("1000");
   const [showCancel, setShowCancel] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState("");
+
+  useEffect(() => {
+    if (session?.user?.name) {
+      setEditedName(session.user.name);
+    }
+  }, [session?.user?.name]);
+
+  const handleNameChange = async () => {
+    if (!isEditing) return setIsEditing(true);
+
+    try {
+      const res = await fetch(
+        `/api/updateUsername?userID=${session?.user?._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: editedName,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        showToast("Username updated successfully");
+      } else {
+        showToast((data as Error).message || "Failed to update username");
+        setEditedName(session?.user?.name || "");
+      }
+    } catch (error) {
+      showToast((error as Error).message);
+      setEditedName(session?.user?.name || "");
+    } finally {
+      setIsEditing(false);
+    }
+  };
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
@@ -335,14 +374,32 @@ const Account: FC = () => {
                  lg:col-span-4
                  xl:col-span-10 xl:mt-[2rem]"
               >
-                <div
-                  className="font-bold text-[14px] text-black-100  font-courierPrime
-                xs:text-[20px]
-                md:text-[25px]
-                xl:text-[25px] 
-                "
-                >
-                  {session?.user?.name}
+                <div className="flex">
+                  {!isEditing ? (
+                    <div
+                      className={`font-bold text-[14px] text-black-100  font-courierPrime
+                      xs:text-[20px]
+                      md:text-[25px]
+                      xl:text-[25px] 
+                      outline-none`}
+                    >
+                      {editedName}
+                    </div>
+                  ) : (
+                    <input
+                      type="text"
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)}
+                      className="font-bold text-[14px] text-black-100 flex-grow-0  font-courierPrime
+                      xs:text-[20px]
+                      md:text-[25px]
+                      xl:text-[25px] 
+                      outline-none border-2 px-2"
+                    />
+                  )}
+                  <button onClick={handleNameChange} className="ml-2">
+                    {isEditing ? <span>💾</span> : <span>🖊</span>}
+                  </button>
                 </div>
                 <div
                   className="font-[400] text-[14px] text-black-100 font-courierPrime leading-6
@@ -511,9 +568,7 @@ const Account: FC = () => {
                                   open={showCancel}
                                 >
                                   <PopoverHandler>
-                                    <button
-                                      className=" px-10 py-2 bg-gradient-red-1-to-red-2 text-white font-courierPrime font-bold "
-                                    >
+                                    <button className=" px-10 py-2 bg-gradient-red-1-to-red-2 text-white font-courierPrime font-bold ">
                                       Cancel
                                     </button>
                                   </PopoverHandler>
